@@ -1,0 +1,18 @@
+Index: local.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>## This file must *NOT* be checked into Version Control Systems,\n# as it contains information specific to your local configuration.\n#\n# Location of the SDK. This is only used by Gradle.\n# For customization when using a Version Control System, please read the\n# header note.\n#Tue Mar 12 13:44:37 EDT 2024\nsdk.dir=/Users/jeffrey/Library/Android/sdk\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/local.properties b/local.properties
+--- a/local.properties	
++++ b/local.properties	
+@@ -4,5 +4,5 @@
+ # Location of the SDK. This is only used by Gradle.
+ # For customization when using a Version Control System, please read the
+ # header note.
+-#Tue Mar 12 13:44:37 EDT 2024
+-sdk.dir=/Users/jeffrey/Library/Android/sdk
++#Thu Mar 14 12:26:31 EDT 2024
++sdk.dir=/Users/natashav/Library/Android/sdk
