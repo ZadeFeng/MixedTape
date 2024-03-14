@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "318085480756",
+    "project_id": "mixtape-9e54c",
+    "storage_bucket": "mixtape-9e54c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318085480756:android:6c74a247848256f1e82561",
+        "android_client_info": {
+          "package_name": "com.example.mixtape"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMV9-yJ58na-Ood05FRbi0yDwCLJ-ost8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
