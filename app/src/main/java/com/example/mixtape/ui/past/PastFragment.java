@@ -1,4 +1,4 @@
-package com.example.mixtape.ui.notifications;
+package com.example.mixtape.ui.past;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.mixtape.databinding.FragmentNotificationsBinding;
+import com.example.mixtape.databinding.FragmentPastBinding;
 
-public class NotificationsFragment extends Fragment {
+public class PastFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
+    private FragmentPastBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        PastViewModel pastViewModel =
+                new ViewModelProvider(this).get(PastViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentPastBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textPast;
+        pastViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
