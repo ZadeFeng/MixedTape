@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MixTape"
+rootProject.name = "MIXTAPE"
 include ':app'
