@@ -13,7 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        manifestPlaceholders = [redirectSchemeName: "<MixTape>", redirectHostName: "auth"]
+        manifestPlaceholders = [redirectSchemeName: "com.example.MixTape", redirectHostName: "auth"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
