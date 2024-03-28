@@ -24,8 +24,7 @@
 
             <intent-filter>
                 <data android:host="auth"
-                    android:scheme="MixTape"
-                    tools:ignore="AppLinkUrlError" />
+                    android:scheme="com.example.mixtape" />
             </intent-filter>
 
         </activity>
