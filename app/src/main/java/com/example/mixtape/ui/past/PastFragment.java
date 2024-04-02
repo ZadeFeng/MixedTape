@@ -24,8 +24,8 @@ public class PastFragment extends Fragment {
         binding = FragmentPastBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textPast;
-        pastViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+//        final TextView textView = binding.textPast;
+//        pastViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
