@@ -123,9 +123,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        int limit = 20; // Number of items per page
+        int offset = 0; // Initial offset
+
         // Create a request to get the user profile
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me")
+                .url("https://api.spotify.com/v1/me/top/artists?limit=" + limit + "&offset=" + offset)
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
 
@@ -174,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
                 .setShowDialog(false)
-                .setScopes(new String[] { "user-read-email" }) // <--- Change the scope of your requested token here
+                .setScopes(new String[] {"user-top-read"}) // <--- Change the scope of your requested token here
                 .setCampaign("your-campaign-token")
                 .build();
     }
