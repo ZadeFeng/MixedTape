@@ -14,6 +14,7 @@ import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -123,12 +124,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        int limit = 20; // Number of items per page
+        int limit = 5; // Number of items per page
         int offset = 0; // Initial offset
+        int total = 5;
 
         // Create a request to get the user profile
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/top/artists?limit=" + limit + "&offset=" + offset)
+                .url("https://api.spotify.com/v1/me/top/artists?limit=" + limit + "&offset=" + offset + "&total=" + total)
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
 
@@ -145,13 +147,20 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                StringBuilder stringBuilder = new StringBuilder();
                 try {
-                    final JSONObject jsonObject = new JSONObject(response.body().string());
-                    setTextAsync(jsonObject.toString(3), profileTextView);
+                    JSONObject jsonObject = new JSONObject(responseData);
+                    JSONArray itemsArray = jsonObject.getJSONArray("items");
+                        for (int i = 0; i < itemsArray.length(); i++) {
+                            JSONObject artistObject = itemsArray.getJSONObject(i);
+                            String artistName = artistObject.getString("name");
+                            stringBuilder.append(artistName).append("\n"); // Append each artist name to the StringBuilder
+                        }
+                    setTextAsync(stringBuilder.toString(), profileTextView);
+
                 } catch (JSONException e) {
-                    Log.d("JSON", "Failed to parse data: " + e);
-                    Toast.makeText(MainActivity.this, "Failed to parse data, watch Logcat for more details",
-                            Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
             }
         });
