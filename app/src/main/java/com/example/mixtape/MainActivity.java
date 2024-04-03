@@ -1,17 +1,13 @@
 package com.example.mixtape;
 
-import android.os.Bundle;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.mixtape.databinding.ActivityMainBinding;
-
+import android.app.Activity;
+import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -20,10 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mixtape.R;
+import com.example.mixtape.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private String mAccessToken, mAccessCode;
     private Call mCall;
 
-    private TextView tokenTextView, codeTextView, profileTextView;
+    private TextView text_home;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        text_home = (TextView) findViewById(R.id.text_home);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -75,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
      * What is token?
      * https://developer.spotify.com/documentation/general/guides/authorization-guide/
      */
-    public void getToken() {
+    public void getToken(Activity activity) {
         final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.TOKEN);
-        AuthorizationClient.openLoginActivity(MainActivity.this, AUTH_TOKEN_REQUEST_CODE, request);
+        AuthorizationClient.openLoginActivity(activity, AUTH_TOKEN_REQUEST_CODE, request);
     }
 
     /**
@@ -86,9 +87,9 @@ public class MainActivity extends AppCompatActivity {
      * What is code?
      * https://developer.spotify.com/documentation/general/guides/authorization-guide/
      */
-    public void getCode() {
+    public void getCode(Activity activity) {
         final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.CODE);
-        AuthorizationClient.openLoginActivity(MainActivity.this, AUTH_CODE_REQUEST_CODE, request);
+        AuthorizationClient.openLoginActivity(activity, AUTH_CODE_REQUEST_CODE, request);
     }
 
 
@@ -104,27 +105,30 @@ public class MainActivity extends AppCompatActivity {
         // Check which request code is present (if any)
         if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
             mAccessToken = response.getAccessToken();
-            setTextAsync(mAccessToken, tokenTextView);
 
         } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
             mAccessCode = response.getCode();
-            setTextAsync(mAccessCode, codeTextView);
         }
+
     }
 
     /**
      * Get user profile
      * This method will get the user profile using the token
      */
-    public void onGetUserProfileClicked() {
+    public void onGetUserProfileClicked(Activity activity) {
         if (mAccessToken == null) {
-            Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        int limit = 5; // Number of items per page
+        int offset = 0; // Initial offset
+        int total = 5;
+
         // Create a request to get the user profile
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me")
+                .url("https://api.spotify.com/v1/me/top/tracks?limit=" + limit + "&offset=" + offset + "&total=" + total)
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
 
@@ -134,24 +138,51 @@ public class MainActivity extends AppCompatActivity {
         mCall.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d("HTTP", "Failed to fetch data: " + e);
-                Toast.makeText(MainActivity.this, "Failed to fetch data, watch Logcat for more details",
-                        Toast.LENGTH_SHORT).show();
+                // Handle network failure
+                Log.e("HTTP", "Failed to fetch data: " + e.getMessage());
+                activity.runOnUiThread(() -> {
+                    Toast.makeText(activity, "Failed to fetch data. Please check your internet connection.", Toast.LENGTH_SHORT).show();
+                });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    // Handle unsuccessful response
+                    Log.e("HTTP", "Response code: " + response.code());
+                    activity.runOnUiThread(() -> {
+                        Toast.makeText(activity, "Failed to fetch data. Response not successful.", Toast.LENGTH_SHORT).show();
+                    });
+                    return;
+                }
+
+                // Process successful response
+                String responseData = response.body().string();
+                StringBuilder stringBuilder = new StringBuilder();
                 try {
-                    final JSONObject jsonObject = new JSONObject(response.body().string());
-                    setTextAsync(jsonObject.toString(3), profileTextView);
+                    JSONObject jsonObject = new JSONObject(responseData);
+                    JSONArray itemsArray = jsonObject.getJSONArray("items");
+                    for (int i = 0; i < itemsArray.length(); i++) {
+                        JSONObject artistObject = itemsArray.getJSONObject(i);
+                        String artistName = artistObject.getString("name");
+                        stringBuilder.append(artistName).append("\n"); // Append each artist name to the StringBuilder
+                    }
+
+                    // Update UI on the main thread
+                    activity.runOnUiThread(() -> setTextAsync(stringBuilder.toString(), text_home));
+
                 } catch (JSONException e) {
-                    Log.d("JSON", "Failed to parse data: " + e);
-                    Toast.makeText(MainActivity.this, "Failed to parse data, watch Logcat for more details",
-                            Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                    // Handle JSON parsing error
+                    Log.e("HTTP", "Failed to parse JSON: " + e.getMessage());
+                    activity.runOnUiThread(() -> {
+                        Toast.makeText(activity, "Failed to fetch data. Error parsing JSON response.", Toast.LENGTH_SHORT).show();
+                    });
                 }
             }
         });
     }
+
 
     /**
      * Creates a UI thread to update a TextView in the background
@@ -173,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
                 .setShowDialog(false)
-                .setScopes(new String[] { "user-read-email" }) // <--- Change the scope of your requested token here
+                .setScopes(new String[] {"user-top-read"}) // <--- Change the scope of your requested token here
                 .setCampaign("your-campaign-token")
                 .build();
     }
@@ -199,4 +230,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public String getAccessToken() {
+        return mAccessToken;
+    }
 }
