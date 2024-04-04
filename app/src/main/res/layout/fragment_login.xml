@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/champagne"
+    tools:context="ui.LoginFragment">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="20dp"
+        android:backgroundTint="@color/light_red"
+        android:background="@drawable/custom_edittext">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/loginText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LOGIN"
+                android:textAlignment="center"
+                android:textColor="@color/brick_red"
+                android:textSize="66dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/loginInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="login or create an account through Spotfiy.com!"
+                android:textAlignment="center"
+                android:textColor="@color/brick_red"
+                android:textSize="26dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/loginInfo2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="(click button twice / again after login)"
+                android:textAlignment="center"
+                android:textColor="@color/brick_red"
+                android:textSize="26dp"
+                android:textStyle="italic" />
+
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:backgroundTint="@color/brick_red"
+                android:text="Submit"
+                android:textSize="28dp"
+                app:cornerRadius="40dp" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

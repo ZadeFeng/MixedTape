@@ -33,13 +33,8 @@ public class HomeFragment extends Fragment {
         mainActivity = (MainActivity) getActivity(); // Get the instance of MainActivity
 
         Button getProfileBtn = (Button) root.findViewById(R.id.get_profile);
-        Button getSpotifyBtn = (Button) root.findViewById(R.id.get_spotify);
+        //Button getSpotifyBtn = (Button) root.findViewById(R.id.get_spotify);
 
-        getSpotifyBtn.setOnClickListener((v) -> {
-            if (mainActivity != null) {
-                mainActivity.getToken(getActivity());
-            }
-        });
         getProfileBtn.setOnClickListener(((v) -> {
             if (mainActivity != null) {
                 mainActivity.onGetUserProfileClicked(getActivity());

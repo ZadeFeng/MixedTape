@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,26 +49,37 @@ public class MainActivity extends AppCompatActivity {
     private String mAccessToken, mAccessCode;
     private Call mCall;
 
+    Button login;
     private TextView text_home;
+    private MainActivity mainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_login);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        login = findViewById(R.id.loginButton);
+        getToken(this); // get Access token
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //mainActivity.getToken(MainActivity.this);
+                binding = ActivityMainBinding.inflate(getLayoutInflater());
+                setContentView(binding.getRoot());
 
-        text_home = (TextView) findViewById(R.id.text_home);
+                text_home = (TextView) findViewById(R.id.text_home);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+                BottomNavigationView navView = findViewById(R.id.nav_view);
+                // Passing each menu ID as a set of Ids because each
+                // menu should be considered as top level destinations.
+                AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                        R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
+                        .build();
+                NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
+                NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
+                NavigationUI.setupWithNavController(binding.navView, navController);
+            }
+        });
     }
 
     /**
