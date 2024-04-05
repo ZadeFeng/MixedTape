@@ -1,6 +1,7 @@
 package com.example.mixtape;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private Call mCall;
 
     private TextView text_home;
+    private AccessTokenViewModel accessTokenViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         text_home = (TextView) findViewById(R.id.text_home);
+
+        accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
+
+        // Retrieve access token from ViewModel
+        String savedAccessToken = accessTokenViewModel.getAccessToken();
+        if (savedAccessToken != null) {
+            // Access token already set, no need to request a new one
+            mAccessToken = savedAccessToken;
+        }
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -105,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         // Check which request code is present (if any)
         if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
             mAccessToken = response.getAccessToken();
+            accessTokenViewModel.setAccessToken(mAccessToken);
 
         } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
             mAccessCode = response.getCode();
@@ -117,9 +129,21 @@ public class MainActivity extends AppCompatActivity {
      * This method will get the user profile using the token
      */
     public void onGetUserProfileClicked(Activity activity) {
+        text_home = (TextView) findViewById(R.id.text_home);
+
         if (mAccessToken == null) {
             Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
+
+
+        // Retrieve access token from ViewModel
+        String savedAccessToken = accessTokenViewModel.getAccessToken();
+        if (savedAccessToken != null) {
+            // Access token already set, no need to request a new one
+            mAccessToken = savedAccessToken;
         }
 
         int limit = 5; // Number of items per page
@@ -228,12 +252,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         cancelCall();
         super.onDestroy();
-    }
-
-    public void onResume() {
-        super.onResume();
-        // Call method to update UI based on fetched data
-        text_home = (TextView) findViewById(R.id.text_home);
     }
 
     public String getAccessToken() {

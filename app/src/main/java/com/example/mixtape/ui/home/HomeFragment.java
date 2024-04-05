@@ -58,6 +58,12 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        // Obtain MainActivity instance only if mainActivity is null
+        if (mainActivity == null) {
+            mainActivity = (MainActivity) getActivity();
+        }
+
         // Clear any previous data or state associated with the buttons
         // For example, if you have text associated with the buttons:
         Button getProfileBtn = requireView().findViewById(R.id.get_profile);
@@ -65,15 +71,15 @@ public class HomeFragment extends Fragment {
 
         getSpotifyBtn.setOnClickListener((v) -> {
             if (mainActivity != null) {
-                mainActivity.getToken(getActivity());
+                mainActivity.getToken(requireActivity());
             }
         });
 
         getProfileBtn.setOnClickListener((v) -> {
             if (mainActivity != null) {
-                mainActivity.onGetUserProfileClicked(getActivity());
+                mainActivity.onGetUserProfileClicked(requireActivity());
             }
         });
-
     }
+
 }
