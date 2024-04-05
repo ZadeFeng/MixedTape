@@ -7,11 +7,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView text_home;
     private AccessTokenViewModel accessTokenViewModel;
 
+    private MediaPlayer mediaPlayer;
+    private Button playButton;
+    public boolean isPlaying = false;
+    private boolean isPreparingMediaPlayer = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +69,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         text_home = (TextView) findViewById(R.id.text_home);
+        playButton = findViewById(R.id.get_profile);
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isPlaying) {
+                    // Start or resume audio playback
+                    if (mediaPlayer == null) {
+                        // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
+                        if (!isPreparingMediaPlayer) {
+                            onGetUserProfileClicked(MainActivity.this);
+                        }
+                    } else {
+                        // If mediaPlayer is not null, resume playback
+                        mediaPlayer.start();
+                    }
+                    isPlaying = true;
+                } else {
+                    // Pause audio playback
+                    if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                    }
+                    isPlaying = false;
+                }
+            }
+        });
+
+
+
 
         accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
 
@@ -136,8 +174,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
+        // Disable the button to prevent multiple clicks
+        playButton.setEnabled(false);
 
+        accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
 
         // Retrieve access token from ViewModel
         String savedAccessToken = accessTokenViewModel.getAccessToken();
@@ -146,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             mAccessToken = savedAccessToken;
         }
 
-        int limit = 5; // Number of items per page
+        int limit = 2; // Number of items per page
         int offset = 0; // Initial offset
         int total = 5;
 
@@ -166,6 +206,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("HTTP", "Failed to fetch data: " + e.getMessage());
                 activity.runOnUiThread(() -> {
                     Toast.makeText(activity, "Failed to fetch data. Please check your internet connection.", Toast.LENGTH_SHORT).show();
+                    // Enable the button again
+                    playButton.setEnabled(true);
                 });
             }
 
@@ -176,6 +218,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("HTTP", "Response code: " + response.code());
                     activity.runOnUiThread(() -> {
                         Toast.makeText(activity, "Failed to fetch data. Response not successful.", Toast.LENGTH_SHORT).show();
+                        // Enable the button again
+                        playButton.setEnabled(true);
                     });
                     return;
                 }
@@ -193,19 +237,85 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // Update UI on the main thread
-                    activity.runOnUiThread(() -> setTextAsync(stringBuilder.toString(), text_home));
+                    activity.runOnUiThread(() -> {
+                        setTextAsync(stringBuilder.toString(), text_home);
+                        // Enable the button again
+                        playButton.setEnabled(true);
+                    });
+
+                    // Create MediaPlayer and set data source
+                    JSONObject song = itemsArray.optJSONObject(1);
+                    if (song != null) {
+                        String previewUrl = song.optString("preview_url");
+                        if (previewUrl != null && !previewUrl.isEmpty()) {
+                            Log.d("Preview URL", previewUrl);
+                            runOnUiThread(() -> Toast.makeText(activity, "Preview URL: " + previewUrl, Toast.LENGTH_SHORT).show());
+
+                            // Check if mediaPlayer is null or preparing
+                            if (mediaPlayer == null || isPreparingMediaPlayer) {
+                                try {
+                                    mediaPlayer = new MediaPlayer();
+                                    mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                                            .build());
+
+                                    mediaPlayer.setDataSource(previewUrl);
+
+                                    isPreparingMediaPlayer = true; // Set flag to true while preparing MediaPlayer
+
+                                    // Inside onGetUserProfileClicked method
+                                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                        @Override
+                                        public void onPrepared(MediaPlayer mp) {
+                                            // MediaPlayer is prepared, start playback
+                                            mediaPlayer.start();
+                                            isPlaying = true;
+                                            isPreparingMediaPlayer = false; // Reset flag after preparation
+                                        }
+                                    });
+
+                                    mediaPlayer.prepareAsync(); // Prepare the MediaPlayer asynchronously
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Log.e("MediaPlayer", "Failed to set data source: " + e.getMessage());
+                                    Toast.makeText(activity, "Failed to set data source for MediaPlayer.", Toast.LENGTH_SHORT).show();
+                                    isPreparingMediaPlayer = false; // Reset flag on error
+                                }
+                            } else {
+                                // Resume playback if mediaPlayer is not null and not preparing
+                                if (!mediaPlayer.isPlaying()) {
+                                    mediaPlayer.start();
+                                    isPlaying = true;
+                                }
+                            }
+                        } else {
+                            Log.e("Preview URL", "Preview URL is null or empty");
+                            runOnUiThread(() -> Toast.makeText(activity, "Preview URL is null or empty.", Toast.LENGTH_SHORT).show());
+                        }
+                    } else {
+                        Log.e("Preview URL", "No song object found");
+                        runOnUiThread(() -> Toast.makeText(activity, "No song object found.", Toast.LENGTH_SHORT).show());
+                    }
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                     // Handle JSON parsing error
-                    Log.e("HTTP", "Failed to parse JSON: " + e.getMessage());
+                    Log.e("HTTP", "Failed to parse JSON or set data source: " + e.getMessage());
                     activity.runOnUiThread(() -> {
-                        Toast.makeText(activity, "Failed to fetch data. Error parsing JSON response.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Failed to fetch data. Error parsing JSON response or setting data source.", Toast.LENGTH_SHORT).show();
+                        // Enable the button again
+                        playButton.setEnabled(true);
                     });
                 }
             }
         });
     }
+
+
+
 
 
     /**
@@ -251,11 +361,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         cancelCall();
+        stopAudioPlayback();
         super.onDestroy();
     }
 
     public String getAccessToken() {
         return mAccessToken;
     }
+
+    private void stopAudioPlayback() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+            isPlaying = false;
+        }
+    }
+
 
 }

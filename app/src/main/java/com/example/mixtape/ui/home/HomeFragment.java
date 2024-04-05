@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment {
         });
         getProfileBtn.setOnClickListener((v) -> {
                 if (mainActivity != null) {
-                    mainActivity.onGetUserProfileClicked(getActivity());
+                    mainActivity.onGetUserProfileClicked(requireActivity());
                 }
         });
 
