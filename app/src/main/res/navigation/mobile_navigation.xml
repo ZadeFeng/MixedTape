@@ -9,17 +9,38 @@
         android:id="@+id/navigation_home"
         android:name="com.example.mixtape.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_past"
+            app:destination="@id/navigation_past" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_past"
         android:name="com.example.mixtape.ui.past.PastFragment"
         android:label="@string/title_past"
-        tools:layout="@layout/fragment_past" />
+        tools:layout="@layout/fragment_past" >
+        <action
+            android:id="@+id/action_navigation_past_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+        <action
+            android:id="@+id/action_navigation_past_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.mixtape.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_past"
+            app:destination="@id/navigation_past" />
+    </fragment>
 </navigation>

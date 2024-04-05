@@ -22,6 +22,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private MainActivity mainActivity;
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -32,20 +33,19 @@ public class HomeFragment extends Fragment {
 
         mainActivity = (MainActivity) getActivity(); // Get the instance of MainActivity
 
-        Button getProfileBtn = (Button) root.findViewById(R.id.get_profile);
-        Button getSpotifyBtn = (Button) root.findViewById(R.id.get_spotify);
+        Button getProfileBtn = root.findViewById(R.id.get_profile);
+        Button getSpotifyBtn = root.findViewById(R.id.get_spotify);
 
         getSpotifyBtn.setOnClickListener((v) -> {
-            if (mainActivity != null) {
-                mainActivity.getToken(getActivity());
-            }
+                if (mainActivity != null) {
+                    mainActivity.getToken(getActivity());
+                }
         });
-        getProfileBtn.setOnClickListener(((v) -> {
-            if (mainActivity != null) {
-                mainActivity.onGetUserProfileClicked(getActivity());
-            }
-        }));
-
+        getProfileBtn.setOnClickListener((v) -> {
+                if (mainActivity != null) {
+                    mainActivity.onGetUserProfileClicked(getActivity());
+                }
+        });
 
         return root;
     }
@@ -54,5 +54,26 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Clear any previous data or state associated with the buttons
+        // For example, if you have text associated with the buttons:
+        Button getProfileBtn = requireView().findViewById(R.id.get_profile);
+        Button getSpotifyBtn = requireView().findViewById(R.id.get_spotify);
+
+        getSpotifyBtn.setOnClickListener((v) -> {
+            if (mainActivity != null) {
+                mainActivity.getToken(getActivity());
+            }
+        });
+
+        getProfileBtn.setOnClickListener((v) -> {
+            if (mainActivity != null) {
+                mainActivity.onGetUserProfileClicked(getActivity());
+            }
+        });
+
     }
 }

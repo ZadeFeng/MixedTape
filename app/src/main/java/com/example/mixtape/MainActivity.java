@@ -230,7 +230,14 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public void onResume() {
+        super.onResume();
+        // Call method to update UI based on fetched data
+        text_home = (TextView) findViewById(R.id.text_home);
+    }
+
     public String getAccessToken() {
         return mAccessToken;
     }
+
 }
