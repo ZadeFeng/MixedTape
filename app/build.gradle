@@ -31,6 +31,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        // Add other exclusions if needed
+    }
 }
 
 dependencies {
@@ -50,4 +54,5 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation 'androidx.navigation:navigation-ui:2.3.0'
 
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:8.3.6'
 }

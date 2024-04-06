@@ -1,5 +1,7 @@
 package com.example.mixtape;
 
+import static com.neovisionaries.i18n.CountryCode.US;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -8,7 +10,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,18 +21,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mixtape.R;
 import com.example.mixtape.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.neovisionaries.i18n.CountryCode;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import org.apache.hc.core5.http.ParseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,6 +43,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.Recommendations;
+import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
+
+import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -95,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
 
 
         accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
@@ -312,6 +321,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Track[] rec = getRecommendations();
+        if (rec==null) {
+            runOnUiThread(() -> {
+                Toast.makeText(activity, "no", Toast.LENGTH_SHORT).show();
+            });
+        } else {
+            runOnUiThread(() -> {
+                Toast.makeText(activity, "yes", Toast.LENGTH_SHORT).show();
+            });
+        }
+//        runOnUiThread(() -> {
+//            assert rec != null;
+//            Toast.makeText(activity, rec[1].toString(), Toast.LENGTH_SHORT).show();
+//        });
     }
 
 
@@ -377,5 +401,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private Track[] getRecommendations(){
+        SpotifyApi spotifyApi = new SpotifyApi.Builder()
+                .setAccessToken(mAccessToken)
+                .build();
 
+        GetRecommendationsRequest getRecommendationsRequest = spotifyApi
+                .getRecommendations()
+                .seed_artists("4NHQUGzhtTLFvgF5SZesLK") // Example artist ID
+                .seed_genres("classical,country") // Example genres
+                .seed_tracks("0c6xIDDpzE81m2q797ordA") // Example track ID
+                .market(CountryCode.valueOf("US")) // Specify the market (United States)
+                .build();
+        Log.d("MyApp", getRecommendationsRequest.toString());
+
+        try {
+            Recommendations recommendations = getRecommendationsRequest.execute();
+            // Log the entire response (headers, status code, and body)
+            Log.d("MyApp","API Response: " + recommendations.toString());
+
+            // Verify access token validity and permissions
+            if (recommendations.getTracks().length == 0) {
+                // Handle empty recommendations
+                Log.d("MyApp","No recommendations available.");
+                // Optionally, suggest fallback recommendations here
+            }
+            return recommendations.getTracks();
+        } catch (SpotifyWebApiException e) {
+            Log.d("MyApp","Spotify API error: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d("MyApp","Network or I/O error: " + e.getMessage());
+        } catch (ParseException e) {
+            Log.d("MyApp","Something went wrong: " + e.getMessage());
+        }catch (Exception e) {
+            Log.d("MyApp","Something went wrong: " + e.getMessage());
+        }
+        return null;
+    }
 }
