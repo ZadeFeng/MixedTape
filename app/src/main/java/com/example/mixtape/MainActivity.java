@@ -1,12 +1,15 @@
 package com.example.mixtape;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.app.Activity;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
@@ -51,6 +54,13 @@ public class MainActivity extends AppCompatActivity {
 
     Button login;
     private TextView text_home;
+    private TextView text_track;
+    private AccessTokenViewModel accessTokenViewModel;
+
+    private MediaPlayer mediaPlayer;
+    private Button playButton;
+    public boolean isPlaying = false;
+    private boolean isPreparingMediaPlayer = false;
     private MainActivity mainActivity;
 
     @Override
@@ -59,15 +69,52 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_login);
 
         login = findViewById(R.id.loginButton);
-        getToken(this); // get Access token
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //mainActivity.getToken(MainActivity.this);
+                getToken(MainActivity.this);
+
                 binding = ActivityMainBinding.inflate(getLayoutInflater());
                 setContentView(binding.getRoot());
 
                 text_home = (TextView) findViewById(R.id.text_home);
+                text_track = (TextView) findViewById(R.id.text_track);
+                playButton = findViewById(R.id.get_tracks);
+
+                playButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!isPlaying) {
+                            // Start or resume audio playback
+                            if (mediaPlayer == null) {
+                                // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
+                                if (!isPreparingMediaPlayer) {
+                                    onGetUserProfileClickedT(MainActivity.this);
+                                }
+                            } else {
+                                // If mediaPlayer is not null, resume playback
+                                mediaPlayer.start();
+                            }
+                            isPlaying = true;
+                        } else {
+                            // Pause audio playback
+                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                mediaPlayer.pause();
+                            }
+                            isPlaying = false;
+                        }
+                    }
+                });
+
+                accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
+
+                // Retrieve access token from ViewModel
+                String savedAccessToken = accessTokenViewModel.getAccessToken();
+                if (savedAccessToken != null) {
+                    // Access token already set, no need to request a new one
+                    mAccessToken = savedAccessToken;
+                }
 
                 BottomNavigationView navView = findViewById(R.id.nav_view);
                 // Passing each menu ID as a set of Ids because each
@@ -128,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
      * Get user profile
      * This method will get the user profile using the token
      */
-    public void onGetUserProfileClicked(Activity activity) {
+    public void onGetUserProfileClickedA(Activity activity) {
         if (mAccessToken == null) {
             Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
             return;
@@ -140,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a request to get the user profile
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/top/tracks?limit=" + limit + "&offset=" + offset + "&total=" + total)
+                .url("https://api.spotify.com/v1/me/top/artists?limit=" + limit + "&offset=" + offset + "&total=" + total)
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
 
@@ -156,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(activity, "Failed to fetch data. Please check your internet connection.", Toast.LENGTH_SHORT).show();
                 });
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
@@ -183,12 +229,157 @@ public class MainActivity extends AppCompatActivity {
                     // Update UI on the main thread
                     activity.runOnUiThread(() -> setTextAsync(stringBuilder.toString(), text_home));
 
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                     // Handle JSON parsing error
                     Log.e("HTTP", "Failed to parse JSON: " + e.getMessage());
                     activity.runOnUiThread(() -> {
                         Toast.makeText(activity, "Failed to fetch data. Error parsing JSON response.", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+        });
+    }
+    public void onGetUserProfileClickedT(Activity activity) {
+        text_track = (TextView) findViewById(R.id.text_track);
+        if (mAccessToken == null) {
+            Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Disable the button to prevent multiple clicks
+        playButton.setEnabled(false);
+
+        accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
+
+        // Retrieve access token from ViewModel
+        String savedAccessToken = accessTokenViewModel.getAccessToken();
+        if (savedAccessToken != null) {
+            // Access token already set, no need to request a new one
+            mAccessToken = savedAccessToken;
+        }
+
+        int limit = 5; // Number of items per page
+        int offset = 0; // Initial offset
+        int total = 5;
+
+        // Create a request to get the user profile
+        final Request request = new Request.Builder()
+                .url("https://api.spotify.com/v1/me/top/tracks?limit=" + limit + "&offset=" + offset + "&total=" + total)
+                .addHeader("Authorization", "Bearer " + mAccessToken)
+                .build();
+
+        cancelCall();
+        mCall = mOkHttpClient.newCall(request);
+
+        mCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // Handle network failure
+                Log.e("HTTP", "Failed to fetch data: " + e.getMessage());
+                activity.runOnUiThread(() -> {
+                    Toast.makeText(activity, "Failed to fetch data. Please check your internet connection.", Toast.LENGTH_SHORT).show();
+                    // Enable the button again
+                    playButton.setEnabled(true);
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    // Handle unsuccessful response
+                    Log.e("HTTP", "Response code: " + response.code());
+                    activity.runOnUiThread(() -> {
+                        Toast.makeText(activity, "Failed to fetch data. Response not successful.", Toast.LENGTH_SHORT).show();
+                        // Enable the button again
+                        playButton.setEnabled(true);
+                    });
+                    return;
+                }
+
+                // Process successful response
+                String responseData = response.body().string();
+                StringBuilder stringBuilder = new StringBuilder();
+                try {
+                    JSONObject jsonObject = new JSONObject(responseData);
+                    JSONArray itemsArray = jsonObject.getJSONArray("items");
+                    for (int i = 0; i < itemsArray.length(); i++) {
+                        JSONObject artistObject = itemsArray.getJSONObject(i);
+                        String artistName = artistObject.getString("name");
+                        stringBuilder.append(artistName).append("\n"); // Append each artist name to the StringBuilder
+                    }
+
+                    // Update UI on the main thread
+                    activity.runOnUiThread(() -> {
+                        setTextAsync(stringBuilder.toString(), text_track);
+                        // Enable the button again
+                        playButton.setEnabled(true);
+                    });
+
+                    // Create MediaPlayer and set data source
+                    JSONObject song = itemsArray.optJSONObject(1);
+                    if (song != null) {
+                        String previewUrl = song.optString("preview_url");
+                        if (previewUrl != null && !previewUrl.isEmpty()) {
+                            Log.d("Preview URL", previewUrl);
+                            runOnUiThread(() -> Toast.makeText(activity, "Preview URL: " + previewUrl, Toast.LENGTH_SHORT).show());
+
+                            // Check if mediaPlayer is null or preparing
+                            if (mediaPlayer == null || isPreparingMediaPlayer) {
+                                try {
+                                    mediaPlayer = new MediaPlayer();
+                                    mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                                            .build());
+
+                                    mediaPlayer.setDataSource(previewUrl);
+
+                                    isPreparingMediaPlayer = true; // Set flag to true while preparing MediaPlayer
+
+                                    // Inside onGetUserProfileClicked method
+                                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                        @Override
+                                        public void onPrepared(MediaPlayer mp) {
+                                            // MediaPlayer is prepared, start playback
+                                            mediaPlayer.start();
+                                            isPlaying = true;
+                                            isPreparingMediaPlayer = false; // Reset flag after preparation
+                                        }
+                                    });
+
+                                    mediaPlayer.prepareAsync(); // Prepare the MediaPlayer asynchronously
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Log.e("MediaPlayer", "Failed to set data source: " + e.getMessage());
+                                    Toast.makeText(activity, "Failed to set data source for MediaPlayer.", Toast.LENGTH_SHORT).show();
+                                    isPreparingMediaPlayer = false; // Reset flag on error
+                                }
+                            } else {
+                                // Resume playback if mediaPlayer is not null and not preparing
+                                if (!mediaPlayer.isPlaying()) {
+                                    mediaPlayer.start();
+                                    isPlaying = true;
+                                }
+                            }
+                        } else {
+                            Log.e("Preview URL", "Preview URL is null or empty");
+                            runOnUiThread(() -> Toast.makeText(activity, "Preview URL is null or empty.", Toast.LENGTH_SHORT).show());
+                        }
+                    } else {
+                        Log.e("Preview URL", "No song object found");
+                        runOnUiThread(() -> Toast.makeText(activity, "No song object found.", Toast.LENGTH_SHORT).show());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    // Handle JSON parsing error
+                    Log.e("HTTP", "Failed to parse JSON: " + e.getMessage());
+                    activity.runOnUiThread(() -> {
+                        Toast.makeText(activity, "Failed to fetch data. Error parsing JSON response.", Toast.LENGTH_SHORT).show();
+                        // Enable the button again
+                        playButton.setEnabled(true);
                     });
                 }
             }
@@ -244,5 +435,13 @@ public class MainActivity extends AppCompatActivity {
 
     public String getAccessToken() {
         return mAccessToken;
+    }
+
+    private void stopAudioPlayback() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+            isPlaying = false;
+        }
     }
 }

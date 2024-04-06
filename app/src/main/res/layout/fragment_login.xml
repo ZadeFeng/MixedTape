@@ -51,10 +51,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="(click button twice / again after login)"
+                android:text="(wait just a second to be redirected to the website)"
                 android:textAlignment="center"
                 android:textColor="@color/brick_red"
-                android:textSize="26dp"
+                android:textSize="24dp"
                 android:textStyle="italic" />
 
             <Button
