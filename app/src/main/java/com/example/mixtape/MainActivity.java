@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private Call mCall;
 
     Button login;
+    private TextView text_profile;
     private TextView text_home;
     private TextView text_track;
     private TextView text_start;
@@ -70,12 +71,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_login);
 
+        // log in info
+
         login = findViewById(R.id.loginButton);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getToken(MainActivity.this);
+
+
 
                 setContentView(R.layout.activity_start);
                 text_start = (TextView) findViewById(R.id.text_start);
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 next1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        getToken(MainActivity.this);
                         setContentView(R.layout.fragment_artists);
 
                         getArtists = findViewById(R.id.get_profile);
@@ -225,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
      * This method will get the user profile using the token
      */
     public void onGetUserProfileClickedA(Activity activity) {
+        text_profile = (TextView) findViewById(R.id.get_tracks);
         if (mAccessToken == null) {
             Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
             return;
@@ -285,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // Update UI on the main thread
-                    activity.runOnUiThread(() -> setTextAsync(stringBuilder.toString(), text_home));
+                    activity.runOnUiThread(() -> setTextAsync(stringBuilder.toString(), text_profile));
 
 
                 } catch (JSONException e) {

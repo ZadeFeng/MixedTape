@@ -35,27 +35,23 @@
                 android:textSize="66dp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/loginInfo"
+            <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="login or create an account through Spotfiy.com!"
-                android:textAlignment="center"
-                android:textColor="@color/brick_red"
-                android:textSize="26dp"
-                android:textStyle="italic" />
+                android:layout_height="50dp"
+                android:id="@+id/login_email"
+                android:layout_marginTop="40dp"
+                android:padding="8dp"
+                android:hint="Email"
+                android:textColor="@color/black"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/login_password"
+                android:layout_marginTop="40dp"
+                android:padding="8dp"
+                android:hint="Password"
+                android:textColor="@color/black"/>
 
-            <TextView
-                android:id="@+id/loginInfo2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="(wait just a second to be redirected to the website)"
-                android:textAlignment="center"
-                android:textColor="@color/brick_red"
-                android:textSize="24dp"
-                android:textStyle="italic" />
 
             <Button
                 android:id="@+id/loginButton"
