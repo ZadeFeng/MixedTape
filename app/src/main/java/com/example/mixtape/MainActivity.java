@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mixtape.R;
 import com.example.mixtape.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.spotify.sdk.android.auth.AuthorizationClient;
@@ -55,10 +54,13 @@ public class MainActivity extends AppCompatActivity {
     Button login;
     private TextView text_home;
     private TextView text_track;
+    private TextView text_start;
+    private TextView text_start2;
     private AccessTokenViewModel accessTokenViewModel;
 
     private MediaPlayer mediaPlayer;
     private Button playButton;
+    private Button getArtists;
     public boolean isPlaying = false;
     private boolean isPreparingMediaPlayer = false;
     private MainActivity mainActivity;
@@ -75,56 +77,103 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getToken(MainActivity.this);
 
-                binding = ActivityMainBinding.inflate(getLayoutInflater());
-                setContentView(binding.getRoot());
+                setContentView(R.layout.activity_start);
+                text_start = (TextView) findViewById(R.id.text_start);
+                text_start2 = (TextView) findViewById(R.id.text_start2);
+                Button next1 = findViewById(R.id.next1);
 
-                text_home = (TextView) findViewById(R.id.text_home);
-                text_track = (TextView) findViewById(R.id.text_track);
-                playButton = findViewById(R.id.get_tracks);
-
-                playButton.setOnClickListener(new View.OnClickListener() {
+                next1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!isPlaying) {
-                            // Start or resume audio playback
-                            if (mediaPlayer == null) {
-                                // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
-                                if (!isPreparingMediaPlayer) {
-                                    onGetUserProfileClickedT(MainActivity.this);
-                                }
-                            } else {
-                                // If mediaPlayer is not null, resume playback
-                                mediaPlayer.start();
+                        setContentView(R.layout.fragment_artists);
+
+                        getArtists = findViewById(R.id.get_profile);
+                        getArtists.setOnClickListener(((View view) -> {
+                            if (mainActivity != null) {
+                                mainActivity.onGetUserProfileClickedA(MainActivity.this);
                             }
-                            isPlaying = true;
-                        } else {
-                            // Pause audio playback
-                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                                mediaPlayer.pause();
-                            }
-                            isPlaying = false;
+                        }));
+                        text_home = (TextView) findViewById(R.id.text_home);
+                        accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
+
+                        // Retrieve access token from ViewModel
+                        String savedAccessToken = accessTokenViewModel.getAccessToken();
+                        if (savedAccessToken != null) {
+                            // Access token already set, no need to request a new one
+                            mAccessToken = savedAccessToken;
                         }
+
+                        Button next = findViewById(R.id.next);
+                        next.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                setContentView(R.layout.fragment_tracks);
+
+                                Button getTracks = findViewById(R.id.get_tracks);
+                                getTracks.setOnClickListener(((View view) -> {
+                                    if (mainActivity != null) {
+                                        mainActivity.onGetUserProfileClickedT(MainActivity.this);
+                                    }
+                                }));
+                                Button next2 = findViewById(R.id.nextTwo);
+                                text_track = (TextView) findViewById(R.id.text_track);
+                                playButton = findViewById(R.id.get_tracks);
+
+                                playButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (!isPlaying) {
+                                            // Start or resume audio playback
+                                            if (mediaPlayer == null) {
+                                                // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
+                                                if (!isPreparingMediaPlayer) {
+                                                    onGetUserProfileClickedT(MainActivity.this);
+                                                }
+                                            } else {
+                                                // If mediaPlayer is not null, resume playback
+                                                mediaPlayer.start();
+                                            }
+                                            isPlaying = true;
+                                        } else {
+                                            // Pause audio playback
+                                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                                mediaPlayer.pause();
+                                            }
+                                            isPlaying = false;
+                                        }
+                                    }
+                                });
+
+                                accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
+
+                                // Retrieve access token from ViewModel
+                                String savedAccessToken = accessTokenViewModel.getAccessToken();
+                                if (savedAccessToken != null) {
+                                    // Access token already set, no need to request a new one
+                                    mAccessToken = savedAccessToken;
+                                }
+
+                                next2.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        binding = ActivityMainBinding.inflate(getLayoutInflater());
+                                        setContentView(binding.getRoot());
+
+                                        BottomNavigationView navView = findViewById(R.id.nav_view);
+                                        // Passing each menu ID as a set of Ids because each
+                                        // menu should be considered as top level destinations.
+                                        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                                                R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
+                                                .build();
+                                        NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
+                                        NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
+                                        NavigationUI.setupWithNavController(binding.navView, navController);
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
-
-                accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
-
-                // Retrieve access token from ViewModel
-                String savedAccessToken = accessTokenViewModel.getAccessToken();
-                if (savedAccessToken != null) {
-                    // Access token already set, no need to request a new one
-                    mAccessToken = savedAccessToken;
-                }
-
-                BottomNavigationView navView = findViewById(R.id.nav_view);
-                // Passing each menu ID as a set of Ids because each
-                // menu should be considered as top level destinations.
-                AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                        R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
-                        .build();
-                NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
-                NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
-                NavigationUI.setupWithNavController(binding.navView, navController);
             }
         });
     }
@@ -179,6 +228,15 @@ public class MainActivity extends AppCompatActivity {
         if (mAccessToken == null) {
             Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
+
+        // Retrieve access token from ViewModel
+        String savedAccessToken = accessTokenViewModel.getAccessToken();
+        if (savedAccessToken != null) {
+            // Access token already set, no need to request a new one
+            mAccessToken = savedAccessToken;
         }
 
         int limit = 5; // Number of items per page

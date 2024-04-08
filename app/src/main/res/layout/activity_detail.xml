@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/champagne">
+<!--    tools:context=".ui.DetailActivity"-->
+
+    <TextView
+        android:id="@+id/detailMixtapeNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="2dp"
+        android:text="MIXTAPE #"
+        android:textColor="@color/brick_red"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/detailImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/brick_red"
+        android:padding="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/mixtapeicon" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="MIXTAPE Created:"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:id="@+id/detailMixtapeDate"
+        android:textSize="18sp"
+        android:textColor="@color/brick_red"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:padding="10dp"
+        android:text="TOP TRACKS"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:id="@+id/detailTracks"
+        android:textSize="18sp"
+        android:textColor="@color/brick_red"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:padding="10dp"
+        android:text="TOP ARTISTS"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:id="@+id/detailArtists"
+        android:textSize="18sp"
+        android:textColor="@color/brick_red"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:padding="10dp"
+        android:text="MINUTES LISTENED"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:id="@+id/detailMinutes"
+        android:textSize="18sp"
+        android:textColor="@color/brick_red"/>
+
+<!--    <TextView-->
+<!--        android:id="@+id/detail"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginTop="0dp"-->
+<!--        android:padding="10dp"-->
+<!--        android:text=""-->
+<!--        android:textAlignment="center"-->
+<!--        android:textColor="@color/brick_red"-->
+<!--        android:textSize="18sp" />-->
+
+</LinearLayout>

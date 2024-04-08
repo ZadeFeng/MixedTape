@@ -30,22 +30,22 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        mainActivity = (MainActivity) getActivity(); // Get the instance of MainActivity
-
-        Button getProfileBtn = (Button) root.findViewById(R.id.get_profile);
-        Button getTracksBtn = (Button) root.findViewById(R.id.get_tracks);
-        //Button getSpotifyBtn = (Button) root.findViewById(R.id.get_spotify);
-
-        getProfileBtn.setOnClickListener(((v) -> {
-            if (mainActivity != null) {
-                mainActivity.onGetUserProfileClickedA(getActivity());
-            }
-        }));
-        getTracksBtn.setOnClickListener(((v) -> {
-            if (mainActivity != null) {
-                mainActivity.onGetUserProfileClickedT(getActivity());
-            }
-        }));
+//        mainActivity = (MainActivity) getActivity(); // Get the instance of MainActivity
+//
+//        Button getProfileBtn = (Button) root.findViewById(R.id.get_profile);
+//        Button getTracksBtn = (Button) root.findViewById(R.id.get_tracks);
+//        //Button getSpotifyBtn = (Button) root.findViewById(R.id.get_spotify);
+//
+//        getProfileBtn.setOnClickListener(((v) -> {
+//            if (mainActivity != null) {
+//                mainActivity.onGetUserProfileClickedA(getActivity());
+//            }
+//        }));
+//        getTracksBtn.setOnClickListener(((v) -> {
+//            if (mainActivity != null) {
+//                mainActivity.onGetUserProfileClickedT(getActivity());
+//            }
+//        }));
 
 
         return root;
