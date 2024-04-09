@@ -41,15 +41,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>{
 //        holder.recCourse.setText(dataList.get(position).getDataArtists());
 //        holder.recProf.setText(dataList.get(position).getDataTracks());
 //        holder.recTime.setText(dataList.get(position).getDataUsername());
-        holder.recCourse.setText("mixtape");
-        holder.recProf.setText("username");
-        holder.recTime.setText("artists");
+        //holder.recCourse.setText("mixtape");
+        //holder.recProf.setText("username");
+        holder.recTime.setText(dataList.get(position).getDataArtists());
 
         holder.recCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, DetailActivity.class);
-                //intent.putExtra("dataArtists", dataList.get(holder.getLayoutPosition()).getDataArtists());
+                intent.putExtra("TOP ARTISTS", dataList.get(holder.getLayoutPosition()).getDataArtists());
 //                intent.putExtra("username", dataList.get(holder.getLayoutPosition()).getDataTracks());
 //                intent.putExtra("Key", dataList.get(holder.getLayoutPosition()).getKey());
                 context.startActivity(intent);
@@ -78,8 +78,8 @@ class MyViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
 
         //recImage = itemView.findViewById(R.id.recImage);
-        recCourse = itemView.findViewById(R.id.recMixtape);
-        recProf = itemView.findViewById(R.id.recUsername);
+        //recCourse = itemView.findViewById(R.id.recMixtape);
+        //recProf = itemView.findViewById(R.id.recUsername);
         recTime = itemView.findViewById(R.id.recTop);
         recCard = itemView.findViewById(R.id.recCard);
 

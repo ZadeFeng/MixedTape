@@ -513,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(MainActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                            finish();
+                            //finish();
                         } else {
                             Toast.makeText(MainActivity.this, "help", Toast.LENGTH_SHORT).show();
                         }

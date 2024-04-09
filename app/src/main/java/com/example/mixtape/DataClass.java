@@ -44,7 +44,7 @@ public class DataClass {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("TOP ARTISTS", dataArtists);
-        result.put("TOP TRACKS", dataTracks);
+        //result.put("TOP TRACKS", dataTracks);
         result.put("stars", stars);
 
         return result;

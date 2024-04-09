@@ -40,7 +40,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            detailProf.setText(bundle.getString("dataArtists"));
+            detailProf.setText(bundle.getString("TOP ARTISTS"));
             //detailCourse.setText(bundle.getString("username"));
             key = bundle.getString("Key");
             //Glide.with(this).load(bundle.getString("Image")).into(detailImage);
@@ -68,7 +68,7 @@ public class DetailActivity extends AppCompatActivity {
                         deleteConfirm.dismiss();
                         Toast.makeText(DetailActivity.this, "Mixtape Deleted", Toast.LENGTH_LONG).show();
                         //startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        finish();
+                        //finish();
                     }
                 });
 
