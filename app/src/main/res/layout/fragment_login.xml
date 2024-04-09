@@ -40,30 +40,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="login or create an account through Spotfiy.com!"
+                android:text=" or create an account through Spotfiy.com!"
                 android:textAlignment="center"
                 android:textColor="@color/brick_red"
                 android:textSize="26dp"
                 android:textStyle="italic" />
 
-            <TextView
-                android:id="@+id/loginInfo2"
+            <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="(wait just a second to be redirected to the website)"
-                android:textAlignment="center"
-                android:textColor="@color/brick_red"
-                android:textSize="24dp"
-                android:textStyle="italic" />
+                android:layout_height="50dp"
+                android:id="@+id/username"
+                android:background="@drawable/custom_edittext"
+                android:drawableLeft="@drawable/baseline_person_24"
+                android:drawablePadding="8dp"
+                android:hint="Enter Username"
+                android:padding="8dp"
+                android:inputType="textPersonName"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/cardview_dark_background"
+                android:layout_marginTop="40dp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/password"
+                android:background="@drawable/custom_edittext"
+                android:drawableLeft="@drawable/baseline_person_24"
+                android:drawablePadding="8dp"
+                android:hint="Enter Password"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:layout_marginTop="40dp"
+                android:autofillHints="" />
 
             <Button
                 android:id="@+id/loginButton"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="50dp"
                 android:backgroundTint="@color/brick_red"
+                android:background="@drawable/btn_bg"
                 android:text="Submit"
                 android:textSize="28dp"
                 app:cornerRadius="40dp" />

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_red">
+    android:background="@color/light_red"
+    tools:context=".TracksActivity">
     <!--    add the bottom line above once a java class has been created for it-->
     <!--    tools:context=".ui.ArtistsActivity"-->
 
@@ -30,6 +31,34 @@
             android:orientation="vertical">
 
             <Button
+                android:id="@+id/get_artists"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_bg"
+                android:backgroundTint="@color/light_red"
+                android:text="Get Top Artists"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/text_home"
+                android:layout_width="match_parent"
+                android:layout_height="158dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="center"
+                android:textColor="@color/brick_red"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Line 1\nLine 2\nLine 3" />
+
+            <Button
                 android:id="@+id/get_tracks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,18 +72,18 @@
             <TextView
                 android:id="@+id/text_track"
                 android:layout_width="match_parent"
-                android:layout_height="477dp"
+                android:layout_height="158dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="22dp"
                 android:layout_marginEnd="8dp"
                 android:textAlignment="center"
                 android:textColor="@color/brick_red"
-                android:textSize="40sp"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Line 1\n\nLine 2\n\nLine 3" />
+                tools:text="Line 1\nLine 2\nLine 3" />
 
             <Button
                 android:id="@+id/nextTwo"

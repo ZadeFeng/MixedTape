@@ -85,14 +85,16 @@ public class MainActivity extends AppCompatActivity {
                 next1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        setContentView(R.layout.fragment_artists);
-
-                        getArtists = findViewById(R.id.get_profile);
-                        getArtists.setOnClickListener(((View view) -> {
-                            if (mainActivity != null) {
-                                mainActivity.onGetUserProfileClickedA(MainActivity.this);
+                        setContentView(R.layout.fragment_tracks);
+                        getArtists = findViewById(R.id.get_artists);
+                        getArtists.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (mainActivity != null) {
+                                    mainActivity.onGetUserProfileClickedA(MainActivity.this);
+                                }
                             }
-                        }));
+                        });
                         text_home = (TextView) findViewById(R.id.text_home);
                         accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
 
@@ -103,73 +105,56 @@ public class MainActivity extends AppCompatActivity {
                             mAccessToken = savedAccessToken;
                         }
 
-                        Button next = findViewById(R.id.next);
-                        next.setOnClickListener(new View.OnClickListener() {
+                        Button getTracks = findViewById(R.id.get_tracks);
+                        getTracks.setOnClickListener(((View view) -> {
+                            if (mainActivity != null) {
+                                mainActivity.onGetUserProfileClickedT(MainActivity.this);
+                            }
+                        }));
+                        Button next2 = findViewById(R.id.nextTwo);
+                        text_track = (TextView) findViewById(R.id.text_track);
+                        playButton = findViewById(R.id.get_tracks);
+
+                        playButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                setContentView(R.layout.fragment_tracks);
-
-                                Button getTracks = findViewById(R.id.get_tracks);
-                                getTracks.setOnClickListener(((View view) -> {
-                                    if (mainActivity != null) {
-                                        mainActivity.onGetUserProfileClickedT(MainActivity.this);
-                                    }
-                                }));
-                                Button next2 = findViewById(R.id.nextTwo);
-                                text_track = (TextView) findViewById(R.id.text_track);
-                                playButton = findViewById(R.id.get_tracks);
-
-                                playButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (!isPlaying) {
-                                            // Start or resume audio playback
-                                            if (mediaPlayer == null) {
-                                                // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
-                                                if (!isPreparingMediaPlayer) {
-                                                    onGetUserProfileClickedT(MainActivity.this);
-                                                }
-                                            } else {
-                                                // If mediaPlayer is not null, resume playback
-                                                mediaPlayer.start();
-                                            }
-                                            isPlaying = true;
-                                        } else {
-                                            // Pause audio playback
-                                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                                                mediaPlayer.pause();
-                                            }
-                                            isPlaying = false;
+                                if (!isPlaying) {
+                                    // Start or resume audio playback
+                                    if (mediaPlayer == null) {
+                                        // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
+                                        if (!isPreparingMediaPlayer) {
+                                            onGetUserProfileClickedT(MainActivity.this);
                                         }
+                                    } else {
+                                        // If mediaPlayer is not null, resume playback
+                                        mediaPlayer.start();
                                     }
-                                });
-
-                                accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
-
-                                // Retrieve access token from ViewModel
-                                String savedAccessToken = accessTokenViewModel.getAccessToken();
-                                if (savedAccessToken != null) {
-                                    // Access token already set, no need to request a new one
-                                    mAccessToken = savedAccessToken;
+                                    isPlaying = true;
+                                } else {
+                                    // Pause audio playback
+                                    if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                        mediaPlayer.pause();
+                                    }
+                                    isPlaying = false;
                                 }
+                            }
+                        });
 
-                                next2.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        binding = ActivityMainBinding.inflate(getLayoutInflater());
-                                        setContentView(binding.getRoot());
+                        next2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                binding = ActivityMainBinding.inflate(getLayoutInflater());
+                                setContentView(binding.getRoot());
 
-                                        BottomNavigationView navView = findViewById(R.id.nav_view);
-                                        // Passing each menu ID as a set of Ids because each
-                                        // menu should be considered as top level destinations.
-                                        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                                                R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
-                                                .build();
-                                        NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
-                                        NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
-                                        NavigationUI.setupWithNavController(binding.navView, navController);
-                                    }
-                                });
+                                BottomNavigationView navView = findViewById(R.id.nav_view);
+                                // Passing each menu ID as a set of Ids because each
+                                // menu should be considered as top level destinations.
+                                AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                                        R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
+                                        .build();
+                                NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
+                                NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
+                                NavigationUI.setupWithNavController(binding.navView, navController);
                             }
                         });
                     }
