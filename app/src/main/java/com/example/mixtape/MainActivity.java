@@ -109,16 +109,13 @@ public class MainActivity extends AppCompatActivity {
                         getTracks.setOnClickListener(((View view) -> {
                             if (mainActivity != null) {
                                 mainActivity.onGetUserProfileClickedT(MainActivity.this);
-                                //uploadData(text_track);
                             }
                         }));
                         getArtists = findViewById(R.id.get_artists);
                         getArtists.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (mainActivity != null) {
-                                    mainActivity.onGetUserProfileClickedA(MainActivity.this);
-                                }
+                                    onGetUserProfileClickedA(MainActivity.this);
                             }
                         });
                         Button next2 = findViewById(R.id.nextTwo);
@@ -280,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
                         stringBuilder.append(artistName).append("\n"); // Append each artist name to the StringBuilder
                     }
 
+                    uploadData(stringBuilder.toString());
                     // Update UI on the main thread
                     activity.runOnUiThread(() -> setTextAsync(stringBuilder.toString(), text_home));
 
@@ -365,8 +363,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     //upload tracks to firebase realtime database
-                    uploadData(stringBuilder.toString());
-                    //tracks = stringBuilder.toString();
+                    //uploadData(stringBuilder.toString());
 
                     // Update UI on the main thread
                     activity.runOnUiThread(() -> {
