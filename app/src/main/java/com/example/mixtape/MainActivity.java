@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -416,9 +417,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MyApp", getRecommendationsRequest.toString());
 
         try {
+            Log.d("MyApp", getRecommendationsRequest.toString());
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+            StrictMode.setThreadPolicy(policy);
             Recommendations recommendations = getRecommendationsRequest.execute();
-            // Log the entire response (headers, status code, and body)
-            Log.d("MyApp","API Response: " + recommendations.toString());
 
             // Verify access token validity and permissions
             if (recommendations.getTracks().length == 0) {
@@ -426,15 +429,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MyApp","No recommendations available.");
                 // Optionally, suggest fallback recommendations here
             }
+
+            Log.d("MyApp",recommendations.getTracks()[1].toString());
             return recommendations.getTracks();
         } catch (SpotifyWebApiException e) {
             Log.d("MyApp","Spotify API error: " + e.getMessage());
         } catch (IOException e) {
             Log.d("MyApp","Network or I/O error: " + e.getMessage());
         } catch (ParseException e) {
-            Log.d("MyApp","Something went wrong: " + e.getMessage());
-        }catch (Exception e) {
-            Log.d("MyApp","Something went wrong: " + e.getMessage());
+            Log.d("MyApp","Something: " + e.getMessage());
         }
         return null;
     }
