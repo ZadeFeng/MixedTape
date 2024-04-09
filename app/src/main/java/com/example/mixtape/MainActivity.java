@@ -84,6 +84,12 @@ public class MainActivity extends AppCompatActivity {
     private boolean isPreparingMediaPlayer = false;
     private MainActivity mainActivity;
     private String time_range = "short_term";
+    private int limit = 5; // Number of items per page
+    private int offset = 0; // Initial offset
+    private int total = 5;
+    private String artistID;
+    private List<String> genres = new ArrayList<>();
+    private String trackID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
                                 NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
                                 NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
                                 NavigationUI.setupWithNavController(binding.navView, navController);
+
+                                getRecommendations();
                             }
                         });
                     }
@@ -270,9 +278,6 @@ public class MainActivity extends AppCompatActivity {
             mAccessToken = savedAccessToken;
         }
 
-        int limit = 5; // Number of items per page
-        int offset = 0; // Initial offset
-        int total = 5;
 
         // Create a request to get the user profile
         final Request request = new Request.Builder()
@@ -309,6 +314,15 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(responseData);
                     JSONArray itemsArray = jsonObject.getJSONArray("items");
+                    artistID = itemsArray.getJSONObject(0).getString("id");
+                    JSONObject firstArtistObject = itemsArray.getJSONObject(0);
+                    JSONArray genreArray = firstArtistObject.getJSONArray("genres");
+                    genres = new ArrayList<>();
+                    for (int j = 0; j < genreArray.length(); j++) {
+                        String genre = genreArray.getString(j);
+                        genres.add(genre);
+                    }
+
                     for (int i = 0; i < itemsArray.length(); i++) {
                         JSONObject artistObject = itemsArray.getJSONObject(i);
                         String artistName = artistObject.getString("name");
@@ -350,9 +364,6 @@ public class MainActivity extends AppCompatActivity {
             mAccessToken = savedAccessToken;
         }
 
-        int limit = 5; // Number of items per page
-        int offset = 0; // Initial offset
-        int total = 5;
 
         // Create a request to get the user profile
         final Request request = new Request.Builder()
@@ -394,6 +405,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(responseData);
                     JSONArray itemsArray = jsonObject.getJSONArray("items");
+                    trackID = itemsArray.getJSONObject(0).getString("id");
 
                     // Prepare a list of preview URLs
                     List<String> previewUrls = new ArrayList<>();
@@ -560,11 +572,13 @@ public class MainActivity extends AppCompatActivity {
                 .setAccessToken(mAccessToken)
                 .build();
 
+        String combinedGenres = String.join(",", genres);
+
         GetRecommendationsRequest getRecommendationsRequest = spotifyApi
                 .getRecommendations()
-                .seed_artists("4NHQUGzhtTLFvgF5SZesLK") // Example artist ID
-                .seed_genres("classical,country") // Example genres
-                .seed_tracks("0c6xIDDpzE81m2q797ordA") // Example track ID
+                .seed_artists(artistID) // Example artist ID
+                .seed_genres(combinedGenres) // Example genres
+                .seed_tracks(trackID) // Example track ID
                 .market(CountryCode.valueOf("US")) // Specify the market (United States)
                 .build();
         Log.d("MyApp", getRecommendationsRequest.toString());
