@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,10 +27,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.FirebaseDatabase;
+import com.neovisionaries.i18n.CountryCode;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import org.apache.hc.core5.http.ParseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +44,11 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.Recommendations;
+import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -499,6 +507,46 @@ public class MainActivity extends AppCompatActivity {
             mediaPlayer = null;
             isPlaying = false;
         }
+    }
+
+    private Track[] getRecommendations(){
+        SpotifyApi spotifyApi = new SpotifyApi.Builder()
+                .setAccessToken(mAccessToken)
+                .build();
+
+        GetRecommendationsRequest getRecommendationsRequest = spotifyApi
+                .getRecommendations()
+                .seed_artists("4NHQUGzhtTLFvgF5SZesLK") // Example artist ID
+                .seed_genres("classical,country") // Example genres
+                .seed_tracks("0c6xIDDpzE81m2q797ordA") // Example track ID
+                .market(CountryCode.valueOf("US")) // Specify the market (United States)
+                .build();
+        Log.d("MyApp", getRecommendationsRequest.toString());
+
+        try {
+            Log.d("MyApp", getRecommendationsRequest.toString());
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+            StrictMode.setThreadPolicy(policy);
+            Recommendations recommendations = getRecommendationsRequest.execute();
+
+            // Verify access token validity and permissions
+            if (recommendations.getTracks().length == 0) {
+                // Handle empty recommendations
+                Log.d("MyApp","No recommendations available.");
+                // Optionally, suggest fallback recommendations here
+            }
+
+            Log.d("MyApp",recommendations.getTracks()[1].toString());
+            return recommendations.getTracks();
+        } catch (SpotifyWebApiException e) {
+            Log.d("MyApp","Spotify API error: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d("MyApp","Network or I/O error: " + e.getMessage());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
     public void uploadData(String text) {
