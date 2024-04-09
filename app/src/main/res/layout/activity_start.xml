@@ -66,7 +66,7 @@
                 android:layout_width="250dp"
                 android:layout_height="250dp"
                 android:layout_marginTop="2dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/mixtapeicon"
                 android:layout_gravity="center_horizontal"
@@ -82,6 +82,8 @@
                 android:backgroundTint="@color/light_red"
                 android:text="NEXT"
                 android:textSize="25sp" />
+
+
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

@@ -51,7 +51,9 @@ import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean isPlaying = false;
     private boolean isPreparingMediaPlayer = false;
     private MainActivity mainActivity;
+    private String time_range = "short_term";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +91,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_login);
 
         login = findViewById(R.id.loginButton);
+        Button shortButton = findViewById(R.id.shortterm);
+        shortButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                time_range = "short_term";
+            }
+        });
+
+        // Click listener for the "medium" button
+        Button mediumButton = findViewById(R.id.mediumterm);
+        mediumButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                time_range = "medium_term";
+            }
+        });
+
+        // Click listener for the "long" button
+        Button longButton = findViewById(R.id.longterm);
+        longButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                time_range = "long_term";
+            }
+        });
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +182,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         });
+
                         //uploadData();
+
 
                         next2.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -246,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a request to get the user profile
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/top/artists?limit=" + limit + "&offset=" + offset + "&total=" + total)
+                .url("https://api.spotify.com/v1/me/top/artists?limit=" + limit + "&offset=" + offset + "&total=" + total + "&time_range=" + time_range)
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
 
@@ -302,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void onGetUserProfileClickedT(Activity activity) {
-        text_track = (TextView) findViewById(R.id.text_track);
+        text_track = findViewById(R.id.text_track);
         if (mAccessToken == null) {
             Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
             return;
@@ -326,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a request to get the user profile
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/top/tracks?limit=" + limit + "&offset=" + offset + "&total=" + total)
+                .url("https://api.spotify.com/v1/me/top/tracks?limit=" + limit + "&offset=" + offset + "&total=" + total + "&time_range=" + time_range)
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
 
@@ -364,77 +394,38 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(responseData);
                     JSONArray itemsArray = jsonObject.getJSONArray("items");
+
+                    // Prepare a list of preview URLs
+                    List<String> previewUrls = new ArrayList<>();
                     for (int i = 0; i < itemsArray.length(); i++) {
-                        JSONObject artistObject = itemsArray.getJSONObject(i);
-                        String artistName = artistObject.getString("name");
-                        stringBuilder.append(artistName).append("\n"); // Append each artist name to the StringBuilder
-                    }
+                        JSONObject song = itemsArray.optJSONObject(i);
+                        JSONObject trackObject = itemsArray.getJSONObject(i);
+                        String trackName = trackObject.getString("name");
+                        stringBuilder.append(trackName).append("\n");
 
-                    //upload tracks to firebase realtime database
-                    //uploadData(stringBuilder.toString());
+                        activity.runOnUiThread(() -> {
+                            setTextAsync(stringBuilder.toString(), text_track);
+                            // Enable the button again
+                            playButton.setEnabled(true);
+                        });
 
-                    // Update UI on the main thread
-                    activity.runOnUiThread(() -> {
-                        setTextAsync(stringBuilder.toString(), text_track);
-                        // Enable the button again
-                        playButton.setEnabled(true);
-                    });
-
-                    // Create MediaPlayer and set data source
-                    JSONObject song = itemsArray.optJSONObject(1);
-                    if (song != null) {
-                        String previewUrl = song.optString("preview_url");
-                        if (previewUrl != null && !previewUrl.isEmpty()) {
-                            Log.d("Preview URL", previewUrl);
-                            runOnUiThread(() -> Toast.makeText(activity, "Preview URL: " + previewUrl, Toast.LENGTH_SHORT).show());
-
-                            // Check if mediaPlayer is null or preparing
-                            if (mediaPlayer == null || isPreparingMediaPlayer) {
-                                try {
-                                    mediaPlayer = new MediaPlayer();
-                                    mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
-                                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                            .setUsage(AudioAttributes.USAGE_MEDIA)
-                                            .build());
-
-                                    mediaPlayer.setDataSource(previewUrl);
-
-                                    isPreparingMediaPlayer = true; // Set flag to true while preparing MediaPlayer
-
-                                    // Inside onGetUserProfileClicked method
-                                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                        @Override
-                                        public void onPrepared(MediaPlayer mp) {
-                                            // MediaPlayer is prepared, start playback
-                                            mediaPlayer.start();
-                                            isPlaying = true;
-                                            isPreparingMediaPlayer = false; // Reset flag after preparation
-                                        }
-                                    });
-
-                                    mediaPlayer.prepareAsync(); // Prepare the MediaPlayer asynchronously
-
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Log.e("MediaPlayer", "Failed to set data source: " + e.getMessage());
-                                    Toast.makeText(activity, "Failed to set data source for MediaPlayer.", Toast.LENGTH_SHORT).show();
-                                    isPreparingMediaPlayer = false; // Reset flag on error
-                                }
-                            } else {
-                                // Resume playback if mediaPlayer is not null and not preparing
-                                if (!mediaPlayer.isPlaying()) {
-                                    mediaPlayer.start();
-                                    isPlaying = true;
-                                }
+                        if (song != null) {
+                            String previewUrl = song.optString("preview_url");
+                            if (previewUrl != null && !previewUrl.isEmpty()) {
+                                previewUrls.add(previewUrl);
                             }
-                        } else {
-                            Log.e("Preview URL", "Preview URL is null or empty");
-                            runOnUiThread(() -> Toast.makeText(activity, "Preview URL is null or empty.", Toast.LENGTH_SHORT).show());
                         }
-                    } else {
-                        Log.e("Preview URL", "No song object found");
-                        runOnUiThread(() -> Toast.makeText(activity, "No song object found.", Toast.LENGTH_SHORT).show());
                     }
+
+                    // Ensure there are songs to play
+                    if (!previewUrls.isEmpty()) {
+                        // Start playing the first song
+                        playTracks(activity, previewUrls, 0);
+                    } else {
+                        // No playable tracks found
+                        activity.runOnUiThread(() -> Toast.makeText(activity, "No playable tracks found.", Toast.LENGTH_SHORT).show());
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                     // Handle JSON parsing error
@@ -448,6 +439,61 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    // Method to play tracks
+    // Method to play tracks
+    private void playTracks(Activity activity, List<String> previewUrls, int currentIndex) {
+        // Check if currentIndex is within bounds
+        if (currentIndex >= 0 && currentIndex < previewUrls.size()) {
+            String previewUrl = previewUrls.get(currentIndex);
+
+            try {
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build());
+
+                mediaPlayer.setDataSource(previewUrl);
+
+                mediaPlayer.setOnPreparedListener(mp -> {
+                    // MediaPlayer is prepared, start playback
+                    mediaPlayer.start();
+                    isPlaying = true;
+
+                    // Set up a listener for when the song completes
+                    mediaPlayer.setOnCompletionListener(mp1 -> {
+                        // Release the MediaPlayer resources
+                        mediaPlayer.release();
+                        mediaPlayer = null;
+
+                        // Check if there are more tracks to play
+                        if (currentIndex + 1 < previewUrls.size()) {
+                            // Play the next track
+                            playTracks(activity, previewUrls, currentIndex + 1);
+                        } else {
+                            // Reset currentIndex to 0 and play the first track again
+                            playTracks(activity, previewUrls, 0);
+                        }
+                    });
+                });
+
+                mediaPlayer.prepareAsync(); // Prepare the MediaPlayer asynchronously
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("MediaPlayer", "Failed to set data source: " + e.getMessage());
+                Toast.makeText(activity, "Failed to set data source for MediaPlayer.", Toast.LENGTH_SHORT).show();
+                // Enable the button again
+                playButton.setEnabled(true);
+            }
+        } else {
+            // All tracks have been played, enable the button again
+            activity.runOnUiThread(() -> playButton.setEnabled(true));
+        }
+    }
+
+
 
 
     /**
