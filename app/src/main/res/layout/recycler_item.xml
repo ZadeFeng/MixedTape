@@ -55,7 +55,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginBottom="15dp"
             android:layout_toEndOf="@+id/recImage"
-            android:text="#1 artist, #1 song, # of minutes listened"
+            android:text="artist"
             android:textColor="@color/black"
             android:textSize="12sp" />
     </RelativeLayout>

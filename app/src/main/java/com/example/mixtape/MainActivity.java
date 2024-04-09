@@ -1,5 +1,6 @@
 package com.example.mixtape;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -20,7 +21,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mixtape.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.FirebaseDatabase;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -36,6 +41,9 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import java.text.DateFormat;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView text_track;
     private TextView text_start;
     private TextView text_start2;
+    private String tracks;
     private AccessTokenViewModel accessTokenViewModel;
 
     private MediaPlayer mediaPlayer;
@@ -86,15 +95,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         setContentView(R.layout.fragment_tracks);
-                        getArtists = findViewById(R.id.get_artists);
-                        getArtists.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (mainActivity != null) {
-                                    mainActivity.onGetUserProfileClickedA(MainActivity.this);
-                                }
-                            }
-                        });
                         text_home = (TextView) findViewById(R.id.text_home);
                         accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
 
@@ -109,8 +109,18 @@ public class MainActivity extends AppCompatActivity {
                         getTracks.setOnClickListener(((View view) -> {
                             if (mainActivity != null) {
                                 mainActivity.onGetUserProfileClickedT(MainActivity.this);
+                                //uploadData(text_track);
                             }
                         }));
+                        getArtists = findViewById(R.id.get_artists);
+                        getArtists.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (mainActivity != null) {
+                                    mainActivity.onGetUserProfileClickedA(MainActivity.this);
+                                }
+                            }
+                        });
                         Button next2 = findViewById(R.id.nextTwo);
                         text_track = (TextView) findViewById(R.id.text_track);
                         playButton = findViewById(R.id.get_tracks);
@@ -139,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         });
+                        //uploadData();
 
                         next2.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -353,6 +364,10 @@ public class MainActivity extends AppCompatActivity {
                         stringBuilder.append(artistName).append("\n"); // Append each artist name to the StringBuilder
                     }
 
+                    //upload tracks to firebase realtime database
+                    uploadData(stringBuilder.toString());
+                    //tracks = stringBuilder.toString();
+
                     // Update UI on the main thread
                     activity.runOnUiThread(() -> {
                         setTextAsync(stringBuilder.toString(), text_track);
@@ -439,6 +454,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setTextAsync(final String text, TextView textView) {
         runOnUiThread(() -> textView.setText(text));
+        //uploadData(text);
     }
 
     /**
@@ -486,5 +502,30 @@ public class MainActivity extends AppCompatActivity {
             mediaPlayer = null;
             isPlaying = false;
         }
+    }
+
+    public void uploadData(String text) {
+        //String tracks = uploadTracks.getText().toString();
+
+        DataClass dataClass = new DataClass(text);
+        String currentDate = String.valueOf(Calendar.getInstance().getTime());
+
+        FirebaseDatabase.getInstance().getReference("mixtape").child(currentDate)
+                .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(MainActivity.this, "help", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

@@ -7,10 +7,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mixtape.DataClass;
+import com.example.mixtape.MyAdapter;
+import com.example.mixtape.R;
 import com.example.mixtape.databinding.FragmentPastBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PastFragment extends Fragment {
 
@@ -23,6 +37,47 @@ public class PastFragment extends Fragment {
 
         binding = FragmentPastBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+//        RecyclerView recyclerView;
+//        List<DataClass> dataList;
+//        DatabaseReference databaseReference;
+//        ValueEventListener valueEventListener;
+//        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
+//
+//        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
+//        recyclerView.setLayoutManager(gridLayoutManager);
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+//        builder.setCancelable(false);
+//        builder.setView(R.layout.progress_layout);
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+//
+//        dataList = new ArrayList<>();
+//
+//        MyAdapter adapter = new MyAdapter(getContext(), dataList);
+//        recyclerView.setAdapter(adapter);
+//
+//        databaseReference = FirebaseDatabase.getInstance().getReference("mixtape");
+//        dialog.show();
+//
+//        valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                dataList.clear();
+//                for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
+//                    DataClass dataClass = itemSnapshot.getValue(DataClass.class);
+//                    dataClass.setKey(itemSnapshot.getKey());
+//                    dataList.add(dataClass);
+//                }
+//                adapter.notifyDataSetChanged();
+//                dialog.dismiss();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
 
         final TextView textView = binding.textPast;
         pastViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);

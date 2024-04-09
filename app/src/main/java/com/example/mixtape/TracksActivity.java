@@ -17,10 +17,12 @@ public class TracksActivity extends AppCompatActivity {
     private AccessTokenViewModel accessTokenViewModel;
     private MainActivity mainActivity;
     private TextView text_tracks;
+    private TextView text_home;
     private String mAccessToken;
     private MediaPlayer mediaPlayer;
     private Button playButton;
     private Button getTracks;
+    private Button getArtists;
     public boolean isPlaying = false;
     private boolean isPreparingMediaPlayer = false;
     @Override
@@ -29,12 +31,19 @@ public class TracksActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_tracks);
 
         Button getTracks = findViewById(R.id.get_tracks);
+        Button getArtists = findViewById(R.id.get_artists);
+        getArtists.setOnClickListener(((View view) -> {
+            if (mainActivity != null) {
+                mainActivity.onGetUserProfileClickedA(mainActivity);
+            }
+        }));
         getTracks.setOnClickListener(((View view) -> {
             if (mainActivity != null) {
                 mainActivity.onGetUserProfileClickedT(mainActivity);
             }
         }));
         text_tracks = (TextView) findViewById(R.id.text_track);
+        text_home = (TextView) findViewById(R.id.text_home);
         playButton = findViewById(R.id.get_tracks);
 
         playButton.setOnClickListener(new View.OnClickListener() {

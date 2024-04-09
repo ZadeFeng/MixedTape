@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/champagne">
+    android:background="@color/champagne"
+    tools:context=".DetailActivity">
 <!--    tools:context=".ui.DetailActivity"-->
 
     <TextView
@@ -78,6 +79,26 @@
         android:id="@+id/detailMinutes"
         android:textSize="18sp"
         android:textColor="@color/brick_red"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="40dp"
+            android:clickable="true"
+            android:contentDescription="delete"
+            android:src="@drawable/baseline_delete_24"
+            android:backgroundTint="@color/white"
+            android:focusable="true">
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+    </RelativeLayout>
 
 <!--    <TextView-->
 <!--        android:id="@+id/detail"-->

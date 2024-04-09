@@ -10,7 +10,7 @@ public class PastViewModel extends ViewModel {
 
     public PastViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+        //mText.setValue("This is dashboard fragment");
     }
 
     public LiveData<String> getText() {
