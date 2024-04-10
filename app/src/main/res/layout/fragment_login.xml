@@ -21,41 +21,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
             android:padding="24dp">
-
-            <Button
-                android:id="@+id/shortterm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_bg"
-                android:backgroundTint="@color/light_red"
-                android:text="4 weeks"
-                android:textSize="25sp" />
-            <Button
-                android:id="@+id/mediumterm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_bg"
-                android:backgroundTint="@color/light_red"
-                android:text="6 months"
-                android:textSize="25sp" />
-
-            <Button
-                android:id="@+id/longterm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_bg"
-                android:backgroundTint="@color/light_red"
-                android:text="1 year"
-                android:textSize="25sp" />
 
             <TextView
                 android:id="@+id/loginText"
@@ -84,39 +52,38 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="50dp"
-                android:backgroundTint="@color/brick_red"
                 android:background="@drawable/btn_bg"
+                android:backgroundTint="@color/brick_red"
                 android:text="Submit"
                 android:textSize="28dp"
                 app:cornerRadius="40dp" />
 
             <EditText
+                android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/username"
+                android:layout_marginTop="40dp"
                 android:background="@drawable/custom_edittext"
                 android:drawableLeft="@drawable/baseline_person_24"
                 android:drawablePadding="8dp"
                 android:hint="Enter Username"
-                android:padding="8dp"
                 android:inputType="textPersonName"
+                android:padding="8dp"
                 android:textColor="@color/black"
-                android:textColorHighlight="@color/cardview_dark_background"
-                android:layout_marginTop="40dp"/>
+                android:textColorHighlight="@color/cardview_dark_background" />
 
             <EditText
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/password"
+                android:layout_marginTop="40dp"
+                android:autofillHints=""
                 android:background="@drawable/custom_edittext"
                 android:drawableLeft="@drawable/baseline_person_24"
                 android:drawablePadding="8dp"
                 android:hint="Enter Password"
                 android:padding="8dp"
-                android:textColor="@color/black"
-                android:layout_marginTop="40dp"
-                android:autofillHints="" />
-
+                android:textColor="@color/black" />
 
 
         </LinearLayout>

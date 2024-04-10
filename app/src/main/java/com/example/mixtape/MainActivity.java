@@ -97,31 +97,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_login);
 
         login = findViewById(R.id.loginButton);
-        Button shortButton = findViewById(R.id.shortterm);
-        shortButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                time_range = "short_term";
-            }
-        });
-
-        // Click listener for the "medium" button
-        Button mediumButton = findViewById(R.id.mediumterm);
-        mediumButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                time_range = "medium_term";
-            }
-        });
-
-        // Click listener for the "long" button
-        Button longButton = findViewById(R.id.longterm);
-        longButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                time_range = "long_term";
-            }
-        });
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +107,32 @@ public class MainActivity extends AppCompatActivity {
                 text_start = (TextView) findViewById(R.id.text_start);
                 text_start2 = (TextView) findViewById(R.id.text_start2);
                 Button next1 = findViewById(R.id.next1);
+
+                Button shortButton = findViewById(R.id.shortterm);
+                shortButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        time_range = "short_term";
+                    }
+                });
+
+                // Click listener for the "medium" button
+                Button mediumButton = findViewById(R.id.mediumterm);
+                mediumButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        time_range = "medium_term";
+                    }
+                });
+
+                // Click listener for the "long" button
+                Button longButton = findViewById(R.id.longterm);
+                longButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        time_range = "long_term";
+                    }
+                });
 
                 next1.setOnClickListener(new View.OnClickListener() {
                     @Override

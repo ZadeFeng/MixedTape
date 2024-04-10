@@ -17,9 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="29dp">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,26 +26,9 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_start"
-                android:layout_width="match_parent"
-                android:layout_height="93dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="22dp"
-                android:layout_marginEnd="8dp"
-                android:textAlignment="center"
-                android:textColor="@color/light_red"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="WELCOME!" />
-
-            <TextView
                 android:id="@+id/text_start2"
                 android:layout_width="match_parent"
-                android:layout_height="136dp"
+                android:layout_height="120dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="22dp"
                 android:layout_marginEnd="8dp"
@@ -61,16 +42,34 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="are you ready to view \nyour current mixtape?" />
 
+            <Button
+                android:id="@+id/shortterm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="4 weeks" />
+
+            <Button
+                android:id="@+id/mediumterm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="6 months" />
+
+            <Button
+                android:id="@+id/longterm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1 year" />
+
             <ImageView
                 android:id="@+id/mixtapeIcon"
                 android:layout_width="250dp"
                 android:layout_height="250dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/brick_red"
                 android:scaleType="fitXY"
-                android:src="@drawable/mixtapeicon"
-                android:layout_gravity="center_horizontal"
-                android:backgroundTint="@color/brick_red"/>
+                android:src="@drawable/mixtapeicon" />
 
             <Button
                 android:id="@+id/next1"
@@ -85,6 +84,23 @@
 
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_start"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="8dp"
+            android:textAlignment="center"
+            android:textColor="@color/light_red"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="WELCOME!" />
 
     </androidx.cardview.widget.CardView>
 
