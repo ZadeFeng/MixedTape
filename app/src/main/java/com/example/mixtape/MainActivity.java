@@ -1,6 +1,8 @@
 package com.example.mixtape;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mixtape.databinding.ActivityMainBinding;
+import com.example.mixtape.ui.LoginFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
@@ -69,120 +72,131 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_login);
+        setContentView(R.layout.activity_main);
+        LoginFragment loginFragment = new LoginFragment();
 
+        // Begin the fragment transaction
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.nav_host_fragment_activity_main, loginFragment, loginFragment.getClass().getSimpleName()).addToBackStack(null).commit();
+    }
+//        setContentView(R.layout.fragment_login);
         // log in info
 
-        login = findViewById(R.id.loginButton);
+        //login = findViewById(R.id.loginButton);
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        // setContentView(R.layout.activity_start);
 
 
+        // login.setOnClickListener(new View.OnClickListener() {
+           // @Override
+           // public void onClick(View v) {
+                //getToken(MainActivity.this);
 
-                setContentView(R.layout.activity_start);
-                text_start = (TextView) findViewById(R.id.text_start);
-                text_start2 = (TextView) findViewById(R.id.text_start2);
-                Button next1 = findViewById(R.id.next1);
-
-                next1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getToken(MainActivity.this);
-                        setContentView(R.layout.fragment_artists);
-
-                        getArtists = findViewById(R.id.get_profile);
-                        getArtists.setOnClickListener(((View view) -> {
-                            if (mainActivity != null) {
-                                mainActivity.onGetUserProfileClickedA(MainActivity.this);
-                            }
-                        }));
-                        text_home = (TextView) findViewById(R.id.text_home);
-                        accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
-
-                        // Retrieve access token from ViewModel
-                        String savedAccessToken = accessTokenViewModel.getAccessToken();
-                        if (savedAccessToken != null) {
-                            // Access token already set, no need to request a new one
-                            mAccessToken = savedAccessToken;
-                        }
-
-                        Button next = findViewById(R.id.next);
-                        next.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                setContentView(R.layout.fragment_tracks);
-
-                                Button getTracks = findViewById(R.id.get_tracks);
-                                getTracks.setOnClickListener(((View view) -> {
-                                    if (mainActivity != null) {
-                                        mainActivity.onGetUserProfileClickedT(MainActivity.this);
-                                    }
-                                }));
-                                Button next2 = findViewById(R.id.nextTwo);
-                                text_track = (TextView) findViewById(R.id.text_track);
-                                playButton = findViewById(R.id.get_tracks);
-
-                                playButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (!isPlaying) {
-                                            // Start or resume audio playback
-                                            if (mediaPlayer == null) {
-                                                // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
-                                                if (!isPreparingMediaPlayer) {
-                                                    onGetUserProfileClickedT(MainActivity.this);
-                                                }
-                                            } else {
-                                                // If mediaPlayer is not null, resume playback
-                                                mediaPlayer.start();
-                                            }
-                                            isPlaying = true;
-                                        } else {
-                                            // Pause audio playback
-                                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                                                mediaPlayer.pause();
-                                            }
-                                            isPlaying = false;
-                                        }
-                                    }
-                                });
-
-                                accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
-
-                                // Retrieve access token from ViewModel
-                                String savedAccessToken = accessTokenViewModel.getAccessToken();
-                                if (savedAccessToken != null) {
-                                    // Access token already set, no need to request a new one
-                                    mAccessToken = savedAccessToken;
-                                }
-
-                                next2.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        binding = ActivityMainBinding.inflate(getLayoutInflater());
-                                        setContentView(binding.getRoot());
-
-                                        BottomNavigationView navView = findViewById(R.id.nav_view);
-                                        // Passing each menu ID as a set of Ids because each
-                                        // menu should be considered as top level destinations.
-                                        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                                                R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
-                                                .build();
-                                        NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
-                                        NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
-                                        NavigationUI.setupWithNavController(binding.navView, navController);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }
-
+//                setContentView(R.layout.activity_start);
+//                text_start = (TextView) findViewById(R.id.text_start);
+//                text_start2 = (TextView) findViewById(R.id.text_start2);
+//                Button next1 = findViewById(R.id.next1);
+//
+//                next1.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        setContentView(R.layout.fragment_artists);
+//
+//                        getArtists = findViewById(R.id.get_profile);
+//                        getArtists.setOnClickListener(((View view) -> {
+//                            if (mainActivity != null) {
+//                                mainActivity.onGetUserProfileClickedA(MainActivity.this);
+//                            }
+//                        }));
+//                        text_home = (TextView) findViewById(R.id.text_home);
+//                        accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
+//
+//                        // Retrieve access token from ViewModel
+//                        String savedAccessToken = accessTokenViewModel.getAccessToken();
+//                        if (savedAccessToken != null) {
+//                            // Access token already set, no need to request a new one
+//                            mAccessToken = savedAccessToken;
+//                        }
+//
+//                        Button next = findViewById(R.id.next);
+//                        next.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                setContentView(R.layout.fragment_tracks);
+//
+//                                Button getTracks = findViewById(R.id.get_tracks);
+//                                getTracks.setOnClickListener(((View view) -> {
+//                                    if (mainActivity != null) {
+//                                        mainActivity.onGetUserProfileClickedT(MainActivity.this);
+//                                    }
+//                                }));
+//                                Button next2 = findViewById(R.id.nextTwo);
+//                                text_track = (TextView) findViewById(R.id.text_track);
+//                                playButton = findViewById(R.id.get_tracks);
+//
+//                                playButton.setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        if (!isPlaying) {
+//                                            // Start or resume audio playback
+//                                            if (mediaPlayer == null) {
+//                                                // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
+//                                                if (!isPreparingMediaPlayer) {
+//                                                    onGetUserProfileClickedT(MainActivity.this);
+//                                                }
+//                                            } else {
+//                                                // If mediaPlayer is not null, resume playback
+//                                                mediaPlayer.start();
+//                                            }
+//                                            isPlaying = true;
+//                                        } else {
+//                                            // Pause audio playback
+//                                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+//                                                mediaPlayer.pause();
+//                                            }
+//                                            isPlaying = false;
+//                                        }
+//                                    }
+//                                });
+//
+//                                accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
+//
+//                                // Retrieve access token from ViewModel
+//                                String savedAccessToken = accessTokenViewModel.getAccessToken();
+//                                if (savedAccessToken != null) {
+//                                    // Access token already set, no need to request a new one
+//                                    mAccessToken = savedAccessToken;
+//                                }
+//
+//                                next2.setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        binding = ActivityMainBinding.inflate(getLayoutInflater());
+//                                        setContentView(binding.getRoot());
+//
+//                                        BottomNavigationView navView = findViewById(R.id.nav_view);
+//                                        // Passing each menu ID as a set of Ids because each
+//                                        // menu should be considered as top level destinations.
+//                                        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+//                                                R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
+//                                                .build();
+//                                        NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
+//                                        NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
+//                                        NavigationUI.setupWithNavController(binding.navView, navController);
+//                                    }
+//                                });
+//                            }
+//                        });
+//                    }
+//                });
+//            //}
+//        //}
+//
+//       //);
+//
+//    }
     /**
      * Get token from Spotify
      * This method will open the Spotify login activity and get the token
