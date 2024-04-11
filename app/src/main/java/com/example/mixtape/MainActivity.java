@@ -604,11 +604,11 @@ public class MainActivity extends AppCompatActivity {
         //String tracks = uploadTracks.getText().toString();
         String username = uploadUsername.getText().toString();
         //String artists = "artists";
-
-        DataClass dataClass = new DataClass(artists, username, text);
         String currentDate = String.valueOf(Calendar.getInstance().getTime());
+        DataClass dataClass = new DataClass(artists, currentDate, text);
 
-        FirebaseDatabase.getInstance().getReference("mixtape").child(currentDate)
+
+        FirebaseDatabase.getInstance().getReference("mixtape").child(username)
                 .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
