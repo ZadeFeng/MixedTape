@@ -201,15 +201,18 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                                 getRecs = findViewById(R.id.get_recs);
+                                text_recs = findViewById(R.id.text_recs);
                                 getRecs.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         Track[] getRecView = getRecommendations();
-                                        String recs = getRecView.toString();
+                                        String recs = "no Recommendation";
+                                        for (int i = 0; i < getRecView.length; i++) {
+                                            recs = getRecView[i].getName().toString();
+                                        }
                                         setTextAsync(recs, text_recs);
                                     }
                                 });
-                                text_recs = findViewById(R.id.text_recs);
 
                                 next3.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -617,7 +620,7 @@ public class MainActivity extends AppCompatActivity {
                 // Optionally, suggest fallback recommendations here
             }
 
-            Log.d("MyApp",recommendations.getTracks()[1].toString());
+            Log.d("Song",recommendations.getTracks()[1].toString());
             return recommendations.getTracks();
         } catch (SpotifyWebApiException e) {
             Log.d("MyApp","Spotify API error: " + e.getMessage());
