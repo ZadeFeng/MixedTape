@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment"
-    android:background="@color/light_red">
+    android:background="@color/champagne">
 
         <TextView
             android:id="@+id/text_past"
@@ -26,7 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="50dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -34,14 +35,16 @@
                 android:text="Welcome!"
                 android:textSize="36sp"
                 android:textStyle="bold"
-                android:textColor="@color/brick_red">
+                android:textColor="@color/brick_red"
+                android:textAlignment="center">
             </TextView>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="click on card to view past mixtape details!"
+                android:text="View other's mixtape details!"
                 android:textSize="20sp"
-                android:textColor="@color/brick_red">
+                android:textColor="@color/light_red"
+                android:textAlignment="center">
             </TextView>
         </LinearLayout>
 
