@@ -9,7 +9,8 @@
     android:layout_marginStart="12dp"
     android:layout_marginEnd="12dp"
     app:cardCornerRadius="20dp"
-    app:cardElevation="8dp">
+    app:cardElevation="8dp"
+    android:backgroundTint="@color/champagne">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,11 +18,12 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/recImage"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="97dp"
+            android:layout_height="104dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:padding="8dp"
+            android:src="@drawable/mixtapeicon"
             app:shapeAppearanceOverlay="@drawable/custom_edittext" />
 
         <TextView
@@ -31,31 +33,70 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_toEndOf="@+id/recImage"
-            android:text="Mixtape #"
-            android:textColor="@color/black"
+            android:text="Mixtape"
+            android:textColor="@color/brick_red"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/recUsername"
-            android:layout_width="120dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="104dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/recImage"
             android:layout_below="@+id/recMixtape"
             android:text="username"
-            android:textColor="@color/black"
+            android:textColor="@color/light_red"
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/recTop"
-            android:layout_width="250dp"
+            android:id="@+id/recTopATitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/recUsername"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toEndOf="@+id/recImage"
+            android:text="TOP ARTISTS:"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+        <TextView
+            android:id="@+id/recTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/recTopATitle"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="15dp"
             android:layout_toEndOf="@+id/recImage"
             android:text="artist"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/recTopTTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/recUsername"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toEndOf="@+id/recTopATitle"
+            android:text="TOP TRACKS"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+        <TextView
+            android:id="@+id/recTopT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/recTopTTitle"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:layout_toEndOf="@+id/recTop"
+            android:text="track"
             android:textColor="@color/black"
             android:textSize="12sp" />
     </RelativeLayout>

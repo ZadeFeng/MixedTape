@@ -43,15 +43,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>{
 //        holder.recTime.setText(dataList.get(position).getDataUsername());
         //holder.recCourse.setText("mixtape");
         //holder.recProf.setText("username");
-        holder.recTime.setText(dataList.get(position).getDataArtists());
+        holder.recTopA.setText(dataList.get(position).getDataArtists());
+        holder.recUser.setText(dataList.get(position).getDataUsername());
+        holder.recTopT.setText(dataList.get(position).getDataTracks());
 
         holder.recCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra("TOP ARTISTS", dataList.get(holder.getLayoutPosition()).getDataArtists());
-//                intent.putExtra("username", dataList.get(holder.getLayoutPosition()).getDataTracks());
-//                intent.putExtra("Key", dataList.get(holder.getLayoutPosition()).getKey());
+                intent.putExtra("username", dataList.get(holder.getLayoutPosition()).getDataUsername());
+                intent.putExtra("TOP TRACKS", dataList.get(holder.getLayoutPosition()).getDataTracks());
+                intent.putExtra("Key", dataList.get(holder.getLayoutPosition()).getKey());
                 context.startActivity(intent);
             }
         });
@@ -71,7 +74,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>{
 class MyViewHolder extends RecyclerView.ViewHolder {
 
     ImageView recImage;
-    TextView recCourse, recProf, recTime;
+    TextView recCourse, recUser, recTopA, recTopT;
     CardView recCard;
 
     public MyViewHolder(@NonNull View itemView) {
@@ -79,8 +82,9 @@ class MyViewHolder extends RecyclerView.ViewHolder {
 
         //recImage = itemView.findViewById(R.id.recImage);
         //recCourse = itemView.findViewById(R.id.recMixtape);
-        //recProf = itemView.findViewById(R.id.recUsername);
-        recTime = itemView.findViewById(R.id.recTop);
+        recUser = itemView.findViewById(R.id.recUsername);
+        recTopA = itemView.findViewById(R.id.recTop);
+        recTopT = itemView.findViewById(R.id.recTopT);
         recCard = itemView.findViewById(R.id.recCard);
 
     }

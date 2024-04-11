@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_red"
-    tools:context=".ArtistsActivity">
+    android:background="@color/light_red">
 <!--    add the bottom line above once a java class has been created for it-->
 <!--    tools:context=".ui.ArtistsActivity"-->
 
@@ -30,36 +29,50 @@
             android:layout_marginTop="50dp"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/get_artists"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="8dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/btn_bg"
-                android:backgroundTint="@color/light_red"
-                android:text="Get Top Artists"
-                android:textSize="25dp" />
-
-            <TextView
-                android:id="@+id/text_home"
-                android:layout_width="match_parent"
-                android:layout_height="477dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="22dp"
-                android:layout_marginEnd="8dp"
                 android:textAlignment="center"
+                android:layout_marginBottom="35dp"
+                android:text="Select Time Frame of Mixtape"
+                android:textStyle="bold"
                 android:textColor="@color/brick_red"
-                android:textSize="40sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Line 1\n\nLine 2\n\nLine 3" />
+                android:textSize="30dp"/>
 
             <Button
-                android:id="@+id/next"
+                android:id="@+id/shortterm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/btn_bg"
+                android:backgroundTint="@color/light_red"
+                android:text="4 weeks" />
+
+            <Button
+                android:id="@+id/mediumterm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/btn_bg"
+                android:backgroundTint="@color/light_red"
+                android:text="6 months" />
+
+            <Button
+                android:id="@+id/longterm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/btn_bg"
+                android:backgroundTint="@color/light_red"
+                android:text="1 year" />
+
+
+            <Button
+                android:id="@+id/nextTwo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

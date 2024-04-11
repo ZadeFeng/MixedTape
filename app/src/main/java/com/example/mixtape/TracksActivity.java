@@ -31,7 +31,7 @@ public class TracksActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_tracks);
 
         Button getTracks = findViewById(R.id.get_tracks);
-        Button getArtists = findViewById(R.id.get_artists);
+        Button getArtists = findViewById(R.id.get_recs);
         getArtists.setOnClickListener(((View view) -> {
             if (mainActivity != null) {
                 mainActivity.onGetUserProfileClickedA(mainActivity);
@@ -80,7 +80,7 @@ public class TracksActivity extends AppCompatActivity {
             mAccessToken = savedAccessToken;
         }
 
-        Button next2 = findViewById(R.id.nextTwo);
+        Button next2 = findViewById(R.id.nextThree);
 
         next2.setOnClickListener(new View.OnClickListener() {
             @Override

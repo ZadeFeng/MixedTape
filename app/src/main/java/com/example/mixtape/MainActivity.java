@@ -18,6 +18,7 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +51,6 @@ import se.michaelthelin.spotify.model_objects.specification.Recommendations;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -70,16 +70,20 @@ public class MainActivity extends AppCompatActivity {
     Button login;
     private TextView text_home;
     private TextView text_track;
+    private TextView text_recs;
     private TextView text_start;
     private TextView text_start2;
-    private String tracks;
+    private String artists = "artists";
     private AccessTokenViewModel accessTokenViewModel;
 
     private MediaPlayer mediaPlayer;
     private Button playButton;
     private Button getArtists;
+    private Button getRecs;
     public boolean isPlaying = false;
     private boolean isPreparingMediaPlayer = false;
+    private String time_range = "short_term";
+    EditText uploadUsername;
     private MainActivity mainActivity;
 
     @Override
@@ -88,11 +92,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_login);
 
         login = findViewById(R.id.loginButton);
+        uploadUsername = findViewById(R.id.username);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getToken(MainActivity.this);
 
                 setContentView(R.layout.activity_start);
                 text_start = (TextView) findViewById(R.id.text_start);
@@ -102,75 +106,120 @@ public class MainActivity extends AppCompatActivity {
                 next1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        setContentView(R.layout.fragment_tracks);
-                        text_home = (TextView) findViewById(R.id.text_home);
-                        accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
+                        getToken(MainActivity.this);
 
-                        // Retrieve access token from ViewModel
-                        String savedAccessToken = accessTokenViewModel.getAccessToken();
-                        if (savedAccessToken != null) {
-                            // Access token already set, no need to request a new one
-                            mAccessToken = savedAccessToken;
-                        }
+                        setContentView(R.layout.fragment_artists);
 
-                        Button getTracks = findViewById(R.id.get_tracks);
-                        getTracks.setOnClickListener(((View view) -> {
-                            if (mainActivity != null) {
-                                mainActivity.onGetUserProfileClickedT(MainActivity.this);
-                            }
-                        }));
-                        getArtists = findViewById(R.id.get_artists);
-                        getArtists.setOnClickListener(new View.OnClickListener() {
+                        Button shortButton = findViewById(R.id.shortterm);
+                        shortButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                    onGetUserProfileClickedA(MainActivity.this);
+                                time_range = "short_term";
+                            }
+                        });
+
+                        // Click listener for the "medium" button
+                        Button mediumButton = findViewById(R.id.mediumterm);
+                        mediumButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                time_range = "medium_term";
+                            }
+                        });
+
+                        // Click listener for the "long" button
+                        Button longButton = findViewById(R.id.longterm);
+                        longButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                time_range = "long_term";
                             }
                         });
                         Button next2 = findViewById(R.id.nextTwo);
-                        text_track = (TextView) findViewById(R.id.text_track);
-                        playButton = findViewById(R.id.get_tracks);
-
-                        playButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (!isPlaying) {
-                                    // Start or resume audio playback
-                                    if (mediaPlayer == null) {
-                                        // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
-                                        if (!isPreparingMediaPlayer) {
-                                            onGetUserProfileClickedT(MainActivity.this);
-                                        }
-                                    } else {
-                                        // If mediaPlayer is not null, resume playback
-                                        mediaPlayer.start();
-                                    }
-                                    isPlaying = true;
-                                } else {
-                                    // Pause audio playback
-                                    if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                                        mediaPlayer.pause();
-                                    }
-                                    isPlaying = false;
-                                }
-                            }
-                        });
-                        //uploadData();
-
                         next2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                binding = ActivityMainBinding.inflate(getLayoutInflater());
-                                setContentView(binding.getRoot());
+                                setContentView(R.layout.fragment_tracks);
 
-                                BottomNavigationView navView = findViewById(R.id.nav_view);
-                                // Passing each menu ID as a set of Ids because each
-                                // menu should be considered as top level destinations.
-                                AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                                        R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
-                                        .build();
-                                NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
-                                NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
-                                NavigationUI.setupWithNavController(binding.navView, navController);
+                                text_home = (TextView) findViewById(R.id.text_home);
+                                accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
+
+                                // Retrieve access token from ViewModel
+                                String savedAccessToken = accessTokenViewModel.getAccessToken();
+                                if (savedAccessToken != null) {
+                                    // Access token already set, no need to request a new one
+                                    mAccessToken = savedAccessToken;
+                                }
+
+                                getArtists = findViewById(R.id.get_profile);
+                                getArtists.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        onGetUserProfileClickedA(MainActivity.this);
+                                    }
+                                });
+                                Button getTracks = findViewById(R.id.get_tracks);
+                                getTracks.setOnClickListener(((View view) -> {
+                                    if (mainActivity != null) {
+                                        mainActivity.onGetUserProfileClickedT(MainActivity.this);
+                                    }
+                                }));
+                                Button next3 = findViewById(R.id.nextThree);
+                                text_track = (TextView) findViewById(R.id.text_track);
+                                playButton = findViewById(R.id.get_tracks);
+
+                                playButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (!isPlaying) {
+                                            // Start or resume audio playback
+                                            if (mediaPlayer == null) {
+                                                // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
+                                                if (!isPreparingMediaPlayer) {
+                                                    onGetUserProfileClickedT(MainActivity.this);
+                                                }
+                                            } else {
+                                                // If mediaPlayer is not null, resume playback
+                                                mediaPlayer.start();
+                                            }
+                                            isPlaying = true;
+                                        } else {
+                                            // Pause audio playback
+                                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                                mediaPlayer.pause();
+                                            }
+                                            isPlaying = false;
+                                        }
+                                    }
+                                });
+                                getRecs = findViewById(R.id.get_recs);
+                                getRecs.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Track[] getRecView = getRecommendations();
+                                        String recs = getRecView.toString();
+                                        setTextAsync(recs, text_recs);
+                                    }
+                                });
+                                text_recs = findViewById(R.id.text_recs);
+
+                                next3.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        binding = ActivityMainBinding.inflate(getLayoutInflater());
+                                        setContentView(binding.getRoot());
+
+                                        BottomNavigationView navView = findViewById(R.id.nav_view);
+                                        // Passing each menu ID as a set of Ids because each
+                                        // menu should be considered as top level destinations.
+                                        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                                                R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
+                                                .build();
+                                        NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
+                                        NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
+                                        NavigationUI.setupWithNavController(binding.navView, navController);
+                                    }
+                                });
                             }
                         });
                     }
@@ -285,7 +334,8 @@ public class MainActivity extends AppCompatActivity {
                         stringBuilder.append(artistName).append("\n"); // Append each artist name to the StringBuilder
                     }
 
-                    uploadData(stringBuilder.toString());
+                    //uploadData(stringBuilder.toString());
+                    artists = stringBuilder.toString();
                     // Update UI on the main thread
                     activity.runOnUiThread(() -> setTextAsync(stringBuilder.toString(), text_home));
 
@@ -371,7 +421,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     //upload tracks to firebase realtime database
-                    //uploadData(stringBuilder.toString());
+                    uploadData(stringBuilder.toString());
+                    //String tracks = stringBuilder.toString();
 
                     // Update UI on the main thread
                     activity.runOnUiThread(() -> {
@@ -551,8 +602,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void uploadData(String text) {
         //String tracks = uploadTracks.getText().toString();
+        String username = uploadUsername.getText().toString();
+        //String artists = "artists";
 
-        DataClass dataClass = new DataClass(text);
+        DataClass dataClass = new DataClass(artists, username, text);
         String currentDate = String.valueOf(Calendar.getInstance().getTime());
 
         FirebaseDatabase.getInstance().getReference("mixtape").child(currentDate)

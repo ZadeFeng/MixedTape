@@ -34,14 +34,14 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        //detailCourse = findViewById(R.id.detailArtists);
+        detailCourse = findViewById(R.id.detailArtists);
         detailProf = findViewById(R.id.detailArtists);
         deleteButton = findViewById(R.id.deleteButton);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             detailProf.setText(bundle.getString("TOP ARTISTS"));
-            //detailCourse.setText(bundle.getString("username"));
+            detailCourse.setText(bundle.getString("username"));
             key = bundle.getString("Key");
             //Glide.with(this).load(bundle.getString("Image")).into(detailImage);
         }
