@@ -47,6 +47,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Recommendations;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
@@ -206,13 +207,26 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
                                         Track[] getRecView = getRecommendations();
-                                        String recs = "no Recommendation";
-                                        for (int i = 0; i < getRecView.length; i++) {
-                                            recs = getRecView[i].getName().toString();
+                                        if (getRecView != null && getRecView.length > 0) {
+                                            Track track = getRecView[0];
+                                            String song = track.getName();
+                                            ArtistSimplified[] artists = track.getArtists();
+                                            String artist = "";
+
+                                            if (artists != null && artists.length > 0) {
+                                                artist = artists[0].getName();
+                                            }
+
+                                            String result = artist + " - " + song;
+
+                                            setTextAsync(result, text_recs);
+                                        } else {
+                                            setTextAsync("No recommendations available", text_recs);
                                         }
-                                        setTextAsync(recs, text_recs);
                                     }
                                 });
+
+
 
                                 next3.setOnClickListener(new View.OnClickListener() {
                                     @Override
