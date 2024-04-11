@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     private String artistID;
     private List<String> genres = new ArrayList<>();
     private String trackID;
+    private int recAmmount = 3;
     private MainActivity mainActivity;
 
     @Override
@@ -207,19 +208,26 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
                                         Track[] getRecView = getRecommendations();
-                                        if (getRecView != null && getRecView.length > 0) {
-                                            Track track = getRecView[0];
-                                            String song = track.getName();
-                                            ArtistSimplified[] artists = track.getArtists();
-                                            String artist = "";
+                                        StringBuilder recBuilder = new StringBuilder();
 
-                                            if (artists != null && artists.length > 0) {
-                                                artist = artists[0].getName();
+                                        if (getRecView != null && getRecView.length > 0) {
+                                            for (int i = 0; i < recAmmount; i++) {
+                                                Track track = getRecView[i];
+                                                String song = track.getName();
+                                                ArtistSimplified[] artists = track.getArtists();
+                                                String artist = "";
+
+                                                if (artists != null && artists.length > 0) {
+                                                    artist = artists[0].getName();
+                                                }
+
+                                                String result = artist + " - " + song;
+                                                recBuilder.append(result);
+                                                recBuilder.append("\n");
                                             }
 
-                                            String result = artist + " - " + song;
 
-                                            setTextAsync(result, text_recs);
+                                            setTextAsync(recBuilder.toString(), text_recs);
                                         } else {
                                             setTextAsync("No recommendations available", text_recs);
                                         }
