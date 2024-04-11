@@ -42,23 +42,23 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="are you ready to view \nyour current mixtape?" />
 
-            <Button
-                android:id="@+id/shortterm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="4 weeks" />
+<!--            <Button-->
+<!--                android:id="@+id/shortterm"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="4 weeks" />-->
 
-            <Button
-                android:id="@+id/mediumterm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="6 months" />
+<!--            <Button-->
+<!--                android:id="@+id/mediumterm"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="6 months" />-->
 
-            <Button
-                android:id="@+id/longterm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="1 year" />
+<!--            <Button-->
+<!--                android:id="@+id/longterm"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="1 year" />-->
 
             <ImageView
                 android:id="@+id/mixtapeIcon"
