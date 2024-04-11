@@ -8,6 +8,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.squareup.picasso.Picasso;
+
 import android.app.Activity;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
@@ -19,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private String artistID;
     private List<String> genres = new ArrayList<>();
     private String trackID;
+    private String imageURL;
     private int recAmmount = 3;
     private MainActivity mainActivity;
 
@@ -374,13 +378,29 @@ public class MainActivity extends AppCompatActivity {
                         stringBuilder.append(artistName).append("\n"); // Append each artist name to the StringBuilder
                     }
 
+                    JSONArray imageArray = firstArtistObject.getJSONArray("images");
+                    if (imageArray.length() > 0) {
+                        JSONObject imageObject = imageArray.getJSONObject(0);
+                        imageURL = imageObject.getString("url");
+                    }
+
                     //uploadData(stringBuilder.toString());
                     artists = stringBuilder.toString();
                     // Update UI on the main thread
-                    activity.runOnUiThread(() -> setTextAsync(stringBuilder.toString(), text_home));
+                    activity.runOnUiThread(() -> { setTextAsync(stringBuilder.toString(), text_home);
+
+                        if (imageURL != null){
+                            ImageView imageView = findViewById(R.id.artistImage);
+                            Picasso.get()
+                                    .load(imageURL)
+                                    .resize(200, 200) // Set the desired width and height
+                                    .centerCrop()     // Crop the image to fit the ImageView
+                                    .into(imageView);
+                        }
+                    });
 
 
-                } catch (JSONException e) {
+                    } catch (JSONException e) {
                     e.printStackTrace();
                     // Handle JSON parsing error
                     Log.e("HTTP", "Failed to parse JSON: " + e.getMessage());
