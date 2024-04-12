@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,6 +34,9 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
+    List<DataClass> dataList;
+    MyAdapter adapter;
+    SearchView searchView;
     private MainActivity mainActivity;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -44,10 +48,11 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         RecyclerView recyclerView;
-        List<DataClass> dataList;
         DatabaseReference databaseReference;
         ValueEventListener valueEventListener;
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
+        searchView = root.findViewById(R.id.search);
+        searchView.clearFocus();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -60,9 +65,9 @@ public class HomeFragment extends Fragment {
 
         dataList = new ArrayList<>();
 
-        MyAdapter adapter = new MyAdapter(getContext(), dataList);
+        adapter = new MyAdapter(getContext(), dataList);
         recyclerView.setAdapter(adapter);
-
+//
         databaseReference = FirebaseDatabase.getInstance().getReference("mixtape");
         dialog.show();
 
@@ -84,6 +89,19 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchList(newText);
+                return true;
+            }
+        });
+
         return root;
     }
 
@@ -91,5 +109,14 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+    public void searchList(String text) {
+        ArrayList<DataClass> searchList = new ArrayList<>();
+        for (DataClass dataClass : dataList) {
+            if (dataClass.getDataUsername().contains(text)) {
+                searchList.add(dataClass);
+            }
+        }
+        adapter.searchDataList(searchList);
     }
 }

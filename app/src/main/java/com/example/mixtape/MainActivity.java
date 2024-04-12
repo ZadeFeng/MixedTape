@@ -156,17 +156,18 @@ public class MainActivity extends AppCompatActivity {
                         next2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                //mainActivity.getToken(MainActivity.this);
                                 setContentView(R.layout.fragment_tracks);
 
                                 text_home = (TextView) findViewById(R.id.text_home);
                                 accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
 
                                 // Retrieve access token from ViewModel
-                                String savedAccessToken = accessTokenViewModel.getAccessToken();
-                                if (savedAccessToken != null) {
-                                    // Access token already set, no need to request a new one
-                                    mAccessToken = savedAccessToken;
-                                }
+//                                String savedAccessToken = accessTokenViewModel.getAccessToken();
+//                                if (savedAccessToken != null) {
+//                                    // Access token already set, no need to request a new one
+//                                    mAccessToken = savedAccessToken;
+//                                }
 
                                 getArtists = findViewById(R.id.get_profile);
                                 getArtists.setOnClickListener(new View.OnClickListener() {
@@ -323,11 +324,11 @@ public class MainActivity extends AppCompatActivity {
         accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
 
         // Retrieve access token from ViewModel
-        String savedAccessToken = accessTokenViewModel.getAccessToken();
-        if (savedAccessToken != null) {
-            // Access token already set, no need to request a new one
-            mAccessToken = savedAccessToken;
-        }
+//        String savedAccessToken = accessTokenViewModel.getAccessToken();
+//        if (savedAccessToken != null) {
+//            // Access token already set, no need to request a new one
+//            mAccessToken = savedAccessToken;
+//        }
 
         // Create a request to get the user profile
         final Request request = new Request.Builder()
@@ -427,11 +428,11 @@ public class MainActivity extends AppCompatActivity {
         accessTokenViewModel = new ViewModelProvider(this).get(AccessTokenViewModel.class);
 
         // Retrieve access token from ViewModel
-        String savedAccessToken = accessTokenViewModel.getAccessToken();
-        if (savedAccessToken != null) {
-            // Access token already set, no need to request a new one
-            mAccessToken = savedAccessToken;
-        }
+//        String savedAccessToken = accessTokenViewModel.getAccessToken();
+//        if (savedAccessToken != null) {
+//            // Access token already set, no need to request a new one
+//            mAccessToken = savedAccessToken;
+//        }
 
 
         // Create a request to get the user profile
@@ -683,9 +684,9 @@ public class MainActivity extends AppCompatActivity {
         //String artists = "artists";
 
         DataClass dataClass = new DataClass(artists, username, text);
-        String currentDate = String.valueOf(Calendar.getInstance().getTime());
+        //String currentDate = String.valueOf(Calendar.getInstance().getTime());
 
-        FirebaseDatabase.getInstance().getReference("mixtape").child(currentDate)
+        FirebaseDatabase.getInstance().getReference("mixtape").child(username)
                 .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
