@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import android.app.Activity;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
@@ -45,8 +46,10 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
@@ -70,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int AUTH_CODE_REQUEST_CODE = 1;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private String mAccessToken, mAccessCode;
+    private String mAccessToken, mAccessCode, refreshToken;
     private Call mCall;
 
     Button login;
@@ -698,5 +701,58 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+//    public static void getNewAccessToken(TokenCallback callback) {
+//        AsyncTask<Void, Void, String> tokenTask = new AsyncTask<Void, Void, String>() {
+//            @Override
+//            protected String doInBackground(Void... voids) {
+//                try {
+//                    OkHttpClient client = new OkHttpClient();
+//                    RequestBody requestBody = new FormBody.Builder()
+//                            .add("grant_type", "refresh_token")
+//                            .add("refresh_token", REFRESH_TOKEN)
+//                            .add("client_id", CLIENT_ID)
+//                            .build();
+//
+//                    Request request = new Request.Builder()
+//                            .url("https://accounts.spotify.com/api/token")
+//                            .post(requestBody)
+//                            .build();
+//
+//                    Response response = client.newCall(request).execute();
+//                    if (response.isSuccessful()) {
+//                        String responseBody = response.body().string();
+//                        return responseBody;
+//                    } else {
+//                        return null;
+//                    }
+//                } catch (IOException e) {
+//                    return null;
+//                }
+//            }
+//
+//            @Override
+//            protected void onPostExecute(String result) {
+//                if (result != null) {
+//                    try {
+//                        // Parse the response JSON to get the new access token
+//                        String accessToken = /* extract access token from result */;
+//                        callback.onTokenReceived(accessToken);
+//                    } catch (Exception e) {
+//                        callback.onError("Error parsing response");
+//                    }
+//                } else {
+//                    callback.onError("Error fetching new tokens");
+//                }
+//            }
+//        };
+//
+//        tokenTask.execute();
+//    }
+//
+    public interface TokenCallback {
+        void onTokenReceived(String accessToken);
+        void onError(String errorMessage);
     }
 }
