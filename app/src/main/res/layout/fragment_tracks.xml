@@ -53,8 +53,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/btn_bg"
-                android:backgroundTint="@color/light_red"
+                android:backgroundTint="@color/brick_red"
                 android:text="Get Top Artists"
                 android:textSize="15sp" />
 
@@ -80,8 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
-                android:background="@drawable/btn_bg"
-                android:backgroundTint="@color/light_red"
+                android:backgroundTint="@color/brick_red"
                 android:text="Get Top Tracks"
                 android:textSize="15sp" />
 
@@ -108,8 +106,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/btn_bg"
-                android:backgroundTint="@color/light_red"
+                android:backgroundTint="@color/brick_red"
                 android:text="Get Recommendation"
                 android:textSize="15sp" />
 
@@ -135,7 +132,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_bg"
                 android:backgroundTint="@color/light_red"
                 android:text="NEXT"
                 android:textSize="20sp" />

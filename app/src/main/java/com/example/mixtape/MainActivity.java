@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 next1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getToken(MainActivity.this);
+                        //getToken(MainActivity.this);
 
                         setContentView(R.layout.fragment_artists);
 
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         next2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //mainActivity.getToken(MainActivity.this);
+                                getToken(MainActivity.this);
                                 setContentView(R.layout.fragment_tracks);
 
                                 text_home = (TextView) findViewById(R.id.text_home);

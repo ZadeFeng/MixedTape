@@ -14,7 +14,54 @@
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="26sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginStart="15dp"/>
+
+    <TextView
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:layout_marginTop="20dp"
+        android:text="Enter Old Info:"
+        android:textColor="@color/brick_red"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/old_username"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/custom_edittext"
+        android:drawableLeft="@drawable/baseline_person_24"
+        android:drawablePadding="8dp"
+        android:hint="Old Username"
+        android:inputType="textPersonName"
+        android:padding="8dp"
+        android:textColor="@color/black"/>
+
+    <EditText
+        android:id="@+id/old_password"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:autofillHints=""
+        android:background="@drawable/custom_edittext"
+        android:drawableLeft="@drawable/baseline_person_24"
+        android:drawablePadding="8dp"
+        android:hint="Old Password"
+        android:padding="8dp"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:layout_marginTop="20dp"
+        android:text="Enter New Info:"
+        android:textColor="@color/brick_red"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/edit_username"
@@ -33,7 +80,7 @@
         android:id="@+id/edit_password"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:autofillHints=""
         android:background="@drawable/custom_edittext"
         android:drawableLeft="@drawable/baseline_person_24"

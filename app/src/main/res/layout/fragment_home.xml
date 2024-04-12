@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment"
-    android:background="@color/champagne">
+    android:background="@color/light_red">
 
     <androidx.appcompat.widget.SearchView
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="View other's mixtape details!\nFilter by entering username into search bar above!"
                 android:textSize="20sp"
-                android:textColor="@color/light_red"
+                android:textColor="@color/brick_red"
                 android:textAlignment="center">
             </TextView>
         </LinearLayout>

@@ -21,8 +21,11 @@ import com.example.mixtape.MainActivity;
 import com.example.mixtape.R;
 import com.example.mixtape.databinding.FragmentProfileBinding;
 import com.example.mixtape.ui.past.PastViewModel;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -61,6 +64,8 @@ public class ProfileFragment extends Fragment {
 
                         EditText username = view.findViewById(R.id.edit_username);
                         EditText password = view.findViewById(R.id.edit_password);
+                        EditText oldUsername = view.findViewById(R.id.old_username);
+                        EditText oldPassword = view.findViewById(R.id.old_password);
                         Button submit = view.findViewById(R.id.submit);
 
                         AlertDialog editUser = new AlertDialog.Builder(requireContext()).setView(view).create();
@@ -72,12 +77,28 @@ public class ProfileFragment extends Fragment {
                             public void onClick(View v) {
                                 String newUsername = username.getText().toString();
                                 String newPassword = password.getText().toString();
+                                String oldUsername2 = oldUsername.getText().toString();
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("newUsername", newUsername);
-                                bundle.putString("newPassword", newPassword);
+                                reference.orderByChild("dataUsername").equalTo(oldUsername2).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                            // Update the username field with the new username
+                                            dataSnapshot.getRef().child("dataUsername").setValue(newUsername);
+                                        }
+                                    }
 
-                                getParentFragmentManager().setFragmentResult("editProfile", bundle);
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+//                                Bundle bundle = new Bundle();
+//                                bundle.putString("newUsername", newUsername);
+//                                bundle.putString("newPassword", newPassword);
+//
+//                                getParentFragmentManager().setFragmentResult("editProfile", bundle);
                                 editUser.dismiss();
                             }
                         });
