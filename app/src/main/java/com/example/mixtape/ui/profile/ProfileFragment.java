@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mixtape.DetailActivity;
@@ -41,6 +42,54 @@ public class ProfileFragment extends Fragment {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("mixtape");
+
+                View view = LayoutInflater.from(getContext()).inflate(R.layout.confirm_edit, null);
+
+                Button no = view.findViewById(R.id.dltNo);
+                Button yes = view.findViewById(R.id.dltYes);
+
+                AlertDialog editConfirm = new AlertDialog.Builder(requireContext()).setView(view).create();
+                editConfirm.setCancelable(false);
+                editConfirm.show();
+
+                yes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editConfirm.dismiss();
+                        View view = LayoutInflater.from(getContext()).inflate(R.layout.edit_user, null);
+
+                        EditText username = view.findViewById(R.id.edit_username);
+                        EditText password = view.findViewById(R.id.edit_password);
+                        Button submit = view.findViewById(R.id.submit);
+
+                        AlertDialog editUser = new AlertDialog.Builder(requireContext()).setView(view).create();
+                        editUser.setCancelable(false);
+                        editUser.show();
+
+                        submit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String newUsername = username.getText().toString();
+                                String newPassword = password.getText().toString();
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("newUsername", newUsername);
+                                bundle.putString("newPassword", newPassword);
+
+                                getParentFragmentManager().setFragmentResult("editProfile", bundle);
+                                editUser.dismiss();
+                            }
+                        });
+                    }
+                });
+
+                no.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editConfirm.dismiss();
+                    }
+                });
 
             }
         });
