@@ -724,10 +724,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
-    public interface TokenCallback {
-        void onTokenReceived(String accessToken);
-        void onError(String errorMessage);
     }
+
 }
