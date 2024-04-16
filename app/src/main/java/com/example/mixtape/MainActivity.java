@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> genres = new ArrayList<>();
     private String trackID;
     private String imageURL;
+    private String trackURL;
     private int recAmmount = 3;
     private MainActivity mainActivity;
 //    private FirebaseFirestore firestore;
@@ -480,6 +481,14 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(responseData);
                     JSONArray itemsArray = jsonObject.getJSONArray("items");
                     trackID = itemsArray.getJSONObject(0).getString("id");
+                    JSONObject one = itemsArray.getJSONObject(0);
+                    JSONObject album = one.getJSONObject("album");
+
+                    JSONArray imageArray = album.getJSONArray("images");
+                    if (imageArray.length() > 0) {
+                        JSONObject imageObject = imageArray.getJSONObject(0);
+                        trackURL = imageObject.getString("url");
+                    }
 
                     // Prepare a list of preview URLs
                     List<String> previewUrls = new ArrayList<>();
@@ -492,6 +501,15 @@ public class MainActivity extends AppCompatActivity {
                         activity.runOnUiThread(() -> {
                             setTextAsync(stringBuilder.toString(), text_track);
                             // Enable the button again
+                            if (trackURL != null){
+                                ImageView imageView = findViewById(R.id.trackImage);
+                                Picasso.get()
+                                        .load(trackURL)
+                                        .resize(200, 200) // Set the desired width and height
+                                        .centerCrop()     // Crop the image to fit the ImageView
+                                        .into(imageView);
+                            }
+
                             playButton.setEnabled(true);
                         });
 
@@ -707,72 +725,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-//        firestore.collection("mixtape").document(username)
-//                .set(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            Toast.makeText(MainActivity.this, "Saved in Firestore", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(MainActivity.this, "Failed to save in Firestore", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-    }
 
-//    public static void getNewAccessToken(TokenCallback callback) {
-//        AsyncTask<Void, Void, String> tokenTask = new AsyncTask<Void, Void, String>() {
-//            @Override
-//            protected String doInBackground(Void... voids) {
-//                try {
-//                    OkHttpClient client = new OkHttpClient();
-//                    RequestBody requestBody = new FormBody.Builder()
-//                            .add("grant_type", "refresh_token")
-//                            .add("refresh_token", REFRESH_TOKEN)
-//                            .add("client_id", CLIENT_ID)
-//                            .build();
-//
-//                    Request request = new Request.Builder()
-//                            .url("https://accounts.spotify.com/api/token")
-//                            .post(requestBody)
-//                            .build();
-//
-//                    Response response = client.newCall(request).execute();
-//                    if (response.isSuccessful()) {
-//                        String responseBody = response.body().string();
-//                        return responseBody;
-//                    } else {
-//                        return null;
-//                    }
-//                } catch (IOException e) {
-//                    return null;
-//                }
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String result) {
-//                if (result != null) {
-//                    try {
-//                        // Parse the response JSON to get the new access token
-//                        String accessToken = /* extract access token from result */;
-//                        callback.onTokenReceived(accessToken);
-//                    } catch (Exception e) {
-//                        callback.onError("Error parsing response");
-//                    }
-//                } else {
-//                    callback.onError("Error fetching new tokens");
-//                }
-//            }
-//        };
-//
-//        tokenTask.execute();
-//    }
-//
     public interface TokenCallback {
         void onTokenReceived(String accessToken);
         void onError(String errorMessage);
