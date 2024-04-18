@@ -3,6 +3,7 @@ package com.example.mixtape;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -173,12 +174,12 @@ public class MainActivity extends AppCompatActivity {
                                 text_home = (TextView) findViewById(R.id.text_home);
                                 accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
 
-                                // Retrieve access token from ViewModel
-//                                String savedAccessToken = accessTokenViewModel.getAccessToken();
-//                                if (savedAccessToken != null) {
-//                                    // Access token already set, no need to request a new one
-//                                    mAccessToken = savedAccessToken;
-//                                }
+//                                Retrieve access token from ViewModel
+                                String savedAccessToken = accessTokenViewModel.getAccessToken();
+                                if (savedAccessToken != null) {
+                                    // Access token already set, no need to request a new one
+                                    mAccessToken = savedAccessToken;
+                                }
 
                                 getArtists = findViewById(R.id.get_profile);
                                 getArtists.setOnClickListener(new View.OnClickListener() {
@@ -329,7 +330,12 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onGetUserProfileClickedA(Activity activity) {
         if (mAccessToken == null) {
-            Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+            if (mRefreshToken == null) {
+                Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+            } else {
+                performRefreshTokenRequest(buildRefreshTokenRequest(mRefreshToken));
+                Log.d("MyApp", mAccessToken);
+            }
             return;
         }
 
@@ -672,7 +678,9 @@ public class MainActivity extends AppCompatActivity {
                 .setClientId(CLIENT_ID)
                 .setClientSecret(CLIENT_SECRET)
                 .build();
+        mAccessToken = spotifyApi.getAccessToken();
         mRefreshToken = spotifyApi.getRefreshToken();
+        Log.d("myapp", mRefreshToken);
 
         String combinedGenres = String.join(",", genres);
 
@@ -775,8 +783,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void performRefreshTokenRequest (Request
-                                                     request, MutableLiveData< JSONObject > tokenResponse){
+    private void performRefreshTokenRequest(Request request) {
         // Performing the request
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -788,7 +795,11 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 assert response.body() != null;
                 try {
-                    tokenResponse.postValue(new JSONObject(response.body().string()));
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    // Store the access token in the provided String parameter
+                    mAccessToken = jsonObject.getString("access_token");
+                    mRefreshToken = jsonObject.getString("refresh_token");
                 } catch (JSONException | IOException e) {
                     throw new RuntimeException(e);
                 }
