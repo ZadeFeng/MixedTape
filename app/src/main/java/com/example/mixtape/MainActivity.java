@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> genres = new ArrayList<>();
     private String trackID;
     private String imageURL;
+    private String trackURL;
     private int recAmmount = 3;
     private MainActivity mainActivity;
 //    private FirebaseFirestore firestore;
@@ -487,6 +488,14 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(responseData);
                     JSONArray itemsArray = jsonObject.getJSONArray("items");
                     trackID = itemsArray.getJSONObject(0).getString("id");
+                    JSONObject one = itemsArray.getJSONObject(0);
+                    JSONObject album = one.getJSONObject("album");
+
+                    JSONArray imageArray = album.getJSONArray("images");
+                    if (imageArray.length() > 0) {
+                        JSONObject imageObject = imageArray.getJSONObject(0);
+                        trackURL = imageObject.getString("url");
+                    }
 
                     // Prepare a list of preview URLs
                     List<String> previewUrls = new ArrayList<>();
@@ -499,6 +508,15 @@ public class MainActivity extends AppCompatActivity {
                         activity.runOnUiThread(() -> {
                             setTextAsync(stringBuilder.toString(), text_track);
                             // Enable the button again
+                            if (trackURL != null){
+                                ImageView imageView = findViewById(R.id.trackImage);
+                                Picasso.get()
+                                        .load(trackURL)
+                                        .resize(200, 200) // Set the desired width and height
+                                        .centerCrop()     // Crop the image to fit the ImageView
+                                        .into(imageView);
+                            }
+
                             playButton.setEnabled(true);
                         });
 
@@ -777,5 +795,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }
