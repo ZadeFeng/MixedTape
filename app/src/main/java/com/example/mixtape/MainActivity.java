@@ -2,6 +2,7 @@ package com.example.mixtape;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -59,7 +60,9 @@ import se.michaelthelin.spotify.model_objects.specification.Recommendations;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 
@@ -68,13 +71,16 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
 
     public static final String CLIENT_ID = "6fce362aa36d46fda30fd2de1d4d4f86";
+    public static final String CLIENT_SECRET = "0108c9ce7f9148a48436baf94c522918";
     public static final String REDIRECT_URI = "com.example.mixtape://auth";
 
     public static final int AUTH_TOKEN_REQUEST_CODE = 0;
     public static final int AUTH_CODE_REQUEST_CODE = 1;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private String mAccessToken, mAccessCode, refreshToken;
+    private String mAccessToken, mAccessCode;
+    private String mRefreshToken = "placeholder";
+
     private Call mCall;
 
     Button login;
@@ -308,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
         // Check which request code is present (if any)
         if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
             mAccessToken = response.getAccessToken();
+            ;
 
         } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
             mAccessCode = response.getCode();
@@ -643,7 +650,11 @@ public class MainActivity extends AppCompatActivity {
     private Track[] getRecommendations(){
         SpotifyApi spotifyApi = new SpotifyApi.Builder()
                 .setAccessToken(mAccessToken)
+                .setRedirectUri(URI.create(REDIRECT_URI))
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
                 .build();
+        mRefreshToken = spotifyApi.getRefreshToken();
 
         String combinedGenres = String.join(",", genres);
 
@@ -718,63 +729,53 @@ public class MainActivity extends AppCompatActivity {
 //                        }
 //                    }
 //                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
+//                    @Overrid
 //                    public void onFailure(@NonNull Exception e) {
 //                        Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 //                    }
 //                });
     }
 
-//    public static void getNewAccessToken(TokenCallback callback) {
-//        AsyncTask<Void, Void, String> tokenTask = new AsyncTask<Void, Void, String>() {
-//            @Override
-//            protected String doInBackground(Void... voids) {
-//                try {
-//                    OkHttpClient client = new OkHttpClient();
-//                    RequestBody requestBody = new FormBody.Builder()
-//                            .add("grant_type", "refresh_token")
-//                            .add("refresh_token", REFRESH_TOKEN)
-//                            .add("client_id", CLIENT_ID)
-//                            .build();
-//
-//                    Request request = new Request.Builder()
-//                            .url("https://accounts.spotify.com/api/token")
-//                            .post(requestBody)
-//                            .build();
-//
-//                    Response response = client.newCall(request).execute();
-//                    if (response.isSuccessful()) {
-//                        String responseBody = response.body().string();
-//                        return responseBody;
-//                    } else {
-//                        return null;
-//                    }
-//                } catch (IOException e) {
-//                    return null;
-//                }
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String result) {
-//                if (result != null) {
-//                    try {
-//                        // Parse the response JSON to get the new access token
-//                        String accessToken = /* extract access token from result */;
-//                        callback.onTokenReceived(accessToken);
-//                    } catch (Exception e) {
-//                        callback.onError("Error parsing response");
-//                    }
-//                } else {
-//                    callback.onError("Error fetching new tokens");
-//                }
-//            }
-//        };
-//
-//        tokenTask.execute();
-//    }
-//
-    public interface TokenCallback {
-        void onTokenReceived(String accessToken);
-        void onError(String errorMessage);
+    private Request buildRefreshTokenRequest (String refreshToken){
+        // Creating the request body
+        RequestBody body = new FormBody.Builder()
+                .add("refresh_token", refreshToken)
+                .add("grant_type", "refresh_token")
+                .add("client_id", CLIENT_ID)
+                .build();
+
+        // Creating the Authorization header
+        String pre64 = String.format("%s:%s", CLIENT_ID, CLIENT_SECRET);
+        String post64 = Base64.getEncoder().encodeToString(pre64.getBytes());
+
+        // Creating the request
+        return new Request.Builder()
+                .url("https://accounts.spotify.com/api/token")
+                .post(body)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .addHeader("Authorization", "Basic " + post64)
+                .build();
     }
+
+    private void performRefreshTokenRequest (Request
+                                                     request, MutableLiveData< JSONObject > tokenResponse){
+        // Performing the request
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("HTTP", "Failed to refresh access token: " + e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                assert response.body() != null;
+                try {
+                    tokenResponse.postValue(new JSONObject(response.body().string()));
+                } catch (JSONException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
 }
