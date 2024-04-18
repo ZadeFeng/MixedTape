@@ -680,6 +680,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         mAccessToken = spotifyApi.getAccessToken();
         mRefreshToken = spotifyApi.getRefreshToken();
+        Log.d("myapp", mRefreshToken);
 
         String combinedGenres = String.join(",", genres);
 
