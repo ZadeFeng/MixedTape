@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+    <!--        android:gravity="start|center_vertical" />-->
+
+    <TextView
+        android:layout_width="326dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:text="Confirm Edit?"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dltYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/brick_red"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Yes"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="180dp"
+            android:backgroundTint="@color/black"
+            android:text="No"
+            android:id="@+id/dltNo"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:clickable="true"
+            android:focusable="true"/>
+    </RelativeLayout>
+
+</LinearLayout>

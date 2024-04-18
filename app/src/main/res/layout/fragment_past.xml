@@ -4,49 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.past.PastFragment">
-
-    <TextView
-        android:id="@+id/text_past"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".ui.past.PastFragment"
+    android:background="@color/champagne">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginStart="50dp">
 
         <TextView
+            android:id="@+id/text_past"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Welcome!"
+            android:layout_marginTop="20dp"
+            android:text="PAST MIXTAPES"
             android:textSize="36sp"
             android:textStyle="bold"
-            android:textColor="@color/black">
+            android:textAlignment="center"
+            android:textColor="@color/brick_red">
         </TextView>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="click on card to view past mixtape details!"
+            android:text="View your past mixtape details!"
+            android:textAlignment="center"
             android:textSize="20sp"
-            android:textColor="@color/black">
+            android:textColor="@color/light_red"
+            android:layout_marginTop="10dp">
         </TextView>
     </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="40dp">
 
         <FrameLayout
             android:id="@+id/frame_layout"
@@ -56,7 +50,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="607dp"
                 android:layout_marginTop="88dp"
                 android:scrollbars="vertical" />
         </FrameLayout>
