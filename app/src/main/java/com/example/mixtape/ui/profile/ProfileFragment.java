@@ -32,6 +32,7 @@ import java.util.Objects;
 public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
+    private MainActivity mainActivity;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -151,6 +152,7 @@ public class ProfileFragment extends Fragment {
                         submit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                mainActivity.stopAudioPlayback();
                                 String username2 = username.getText().toString();
                                 reference.child(username2).removeValue();
                                 Toast.makeText(getContext(), "Mixtape Deleted", Toast.LENGTH_LONG).show();
