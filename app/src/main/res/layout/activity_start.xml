@@ -20,55 +20,62 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="29dp">
 
+        <TextView
+            android:id="@+id/text_start"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:textAlignment="center"
+            android:textColor="@color/brick_red"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            tools:text="WELCOME!" />
+
+        <TextView
+            android:id="@+id/text_start2"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:textAlignment="center"
+            android:textColor="@color/brick_red"
+            android:textSize="30sp"
+            android:textStyle="italic"
+            tools:text="are you ready to view \nyour current mixtape?" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/text_start"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="8dp"
-                android:textAlignment="center"
-                android:textColor="@color/brick_red"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                tools:text="WELCOME!" />
-
-            <TextView
-                android:id="@+id/text_start2"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="8dp"
-                android:textAlignment="center"
-                android:textColor="@color/brick_red"
-                android:textSize="30sp"
-                android:textStyle="italic"
-                tools:text="are you ready to view \nyour current mixtape?" />
-
-<!--            <Button-->
-<!--                android:id="@+id/shortterm"-->
+<!--            <TextView-->
+<!--                android:id="@+id/text_start"-->
 <!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="4 weeks" />-->
+<!--                android:layout_height="80dp"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:layout_marginTop="12dp"-->
+<!--                android:layout_marginEnd="8dp"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textColor="@color/brick_red"-->
+<!--                android:textSize="40sp"-->
+<!--                android:textStyle="bold"-->
+<!--                tools:text="WELCOME!" />-->
 
-<!--            <Button-->
-<!--                android:id="@+id/mediumterm"-->
+<!--            <TextView-->
+<!--                android:id="@+id/text_start2"-->
 <!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="6 months" />-->
-
-<!--            <Button-->
-<!--                android:id="@+id/longterm"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="1 year" />-->
+<!--                android:layout_height="120dp"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:layout_marginTop="12dp"-->
+<!--                android:layout_marginEnd="8dp"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textColor="@color/brick_red"-->
+<!--                android:textSize="30sp"-->
+<!--                android:textStyle="italic"-->
+<!--                tools:text="are you ready to view \nyour current mixtape?" />-->
 
             <ImageView
                 android:id="@+id/mixtapeIcon"

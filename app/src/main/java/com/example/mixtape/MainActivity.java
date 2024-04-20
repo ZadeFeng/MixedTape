@@ -2,8 +2,6 @@ package com.example.mixtape;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -61,9 +59,7 @@ import se.michaelthelin.spotify.model_objects.specification.Recommendations;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
 
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 
@@ -72,16 +68,13 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
 
     public static final String CLIENT_ID = "6fce362aa36d46fda30fd2de1d4d4f86";
-    public static final String CLIENT_SECRET = "0108c9ce7f9148a48436baf94c522918";
     public static final String REDIRECT_URI = "com.example.mixtape://auth";
 
     public static final int AUTH_TOKEN_REQUEST_CODE = 0;
     public static final int AUTH_CODE_REQUEST_CODE = 1;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private String mAccessToken, mAccessCode;
-    private String mRefreshToken = "placeholder";
-
+    private String mAccessToken, mAccessCode, refreshToken;
     private Call mCall;
 
     Button login;
@@ -126,159 +119,157 @@ public class MainActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (uploadUsername == null || uploadUsername.getText().toString().equals("") || uploadUsername.getText().toString().equals(" ")) {
-                    Toast.makeText(MainActivity.this, "Login info can not be blank!", Toast.LENGTH_SHORT).show();
-                } else {
-                    setContentView(R.layout.activity_start);
-                    text_start = (TextView) findViewById(R.id.text_start);
-                    text_start2 = (TextView) findViewById(R.id.text_start2);
-                    Button next1 = findViewById(R.id.next1);
 
-                    next1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //getToken(MainActivity.this);
+                setContentView(R.layout.activity_start);
+                text_start = (TextView) findViewById(R.id.text_start);
+                text_start2 = (TextView) findViewById(R.id.text_start2);
+                Button next1 = findViewById(R.id.next1);
 
-                            setContentView(R.layout.fragment_artists);
+                next1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //getToken(MainActivity.this);
 
-                            Button shortButton = findViewById(R.id.shortterm);
-                            shortButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    time_range = "short_term";
-                                }
-                            });
+                        setContentView(R.layout.fragment_artists);
 
-                            // Click listener for the "medium" button
-                            Button mediumButton = findViewById(R.id.mediumterm);
-                            mediumButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    time_range = "medium_term";
-                                }
-                            });
+                        Button shortButton = findViewById(R.id.shortterm);
+                        shortButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                time_range = "short_term";
+                            }
+                        });
 
-                            // Click listener for the "long" button
-                            Button longButton = findViewById(R.id.longterm);
-                            longButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    time_range = "long_term";
-                                }
-                            });
-                            Button next2 = findViewById(R.id.nextTwo);
-                            next2.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    getToken(MainActivity.this);
-                                    setContentView(R.layout.fragment_tracks);
+                        // Click listener for the "medium" button
+                        Button mediumButton = findViewById(R.id.mediumterm);
+                        mediumButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                time_range = "medium_term";
+                            }
+                        });
 
-                                    text_home = (TextView) findViewById(R.id.text_home);
-                                    accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
+                        // Click listener for the "long" button
+                        Button longButton = findViewById(R.id.longterm);
+                        longButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                time_range = "long_term";
+                            }
+                        });
+                        Button next2 = findViewById(R.id.nextTwo);
+                        next2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getToken(MainActivity.this);
+                                setContentView(R.layout.fragment_tracks);
 
-//                                Retrieve access token from ViewModel
-                                String savedAccessToken = accessTokenViewModel.getAccessToken();
-                                if (savedAccessToken != null) {
-                                    // Access token already set, no need to request a new one
-                                    mAccessToken = savedAccessToken;
-                                }
+                                text_home = (TextView) findViewById(R.id.text_home);
+                                accessTokenViewModel = new ViewModelProvider(MainActivity.this).get(AccessTokenViewModel.class);
 
-                                    getArtists = findViewById(R.id.get_profile);
-                                    getArtists.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            onGetUserProfileClickedA(MainActivity.this);
-                                        }
-                                    });
-                                    Button getTracks = findViewById(R.id.get_tracks);
-                                    getTracks.setOnClickListener(((View view) -> {
-                                        if (mainActivity != null) {
-                                            mainActivity.onGetUserProfileClickedT(MainActivity.this);
-                                        }
-                                    }));
-                                    Button next3 = findViewById(R.id.nextThree);
-                                    text_track = (TextView) findViewById(R.id.text_track);
-                                    playButton = findViewById(R.id.get_tracks);
+                                // Retrieve access token from ViewModel
+//                                String savedAccessToken = accessTokenViewModel.getAccessToken();
+//                                if (savedAccessToken != null) {
+//                                    // Access token already set, no need to request a new one
+//                                    mAccessToken = savedAccessToken;
+//                                }
 
-                                    playButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            if (!isPlaying) {
-                                                // Start or resume audio playback
-                                                if (mediaPlayer == null) {
-                                                    // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
-                                                    if (!isPreparingMediaPlayer) {
-                                                        onGetUserProfileClickedT(MainActivity.this);
-                                                    }
-                                                } else {
-                                                    // If mediaPlayer is not null, resume playback
-                                                    mediaPlayer.start();
+                                getArtists = findViewById(R.id.get_profile);
+                                getArtists.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        onGetUserProfileClickedA(MainActivity.this);
+                                    }
+                                });
+                                Button getTracks = findViewById(R.id.get_tracks);
+                                getTracks.setOnClickListener(((View view) -> {
+                                    if (mainActivity != null) {
+                                        mainActivity.onGetUserProfileClickedT(MainActivity.this);
+                                    }
+                                }));
+                                Button next3 = findViewById(R.id.nextThree);
+                                text_track = (TextView) findViewById(R.id.text_track);
+                                playButton = findViewById(R.id.get_tracks);
+
+                                playButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (!isPlaying) {
+                                            // Start or resume audio playback
+                                            if (mediaPlayer == null) {
+                                                // If mediaPlayer is null and not preparing, start playback by calling onGetUserProfileClicked
+                                                if (!isPreparingMediaPlayer) {
+                                                    onGetUserProfileClickedT(MainActivity.this);
                                                 }
-                                                isPlaying = true;
                                             } else {
-                                                // Pause audio playback
-                                                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                                                    mediaPlayer.pause();
-                                                }
-                                                isPlaying = false;
+                                                // If mediaPlayer is not null, resume playback
+                                                mediaPlayer.start();
                                             }
+                                            isPlaying = true;
+                                        } else {
+                                            // Pause audio playback
+                                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                                mediaPlayer.pause();
+                                            }
+                                            isPlaying = false;
                                         }
-                                    });
-                                    getRecs = findViewById(R.id.get_recs);
-                                    text_recs = findViewById(R.id.text_recs);
-                                    getRecs.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            Track[] getRecView = getRecommendations();
-                                            StringBuilder recBuilder = new StringBuilder();
+                                    }
+                                });
+                                getRecs = findViewById(R.id.get_recs);
+                                text_recs = findViewById(R.id.text_recs);
+                                getRecs.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Track[] getRecView = getRecommendations();
+                                        StringBuilder recBuilder = new StringBuilder();
 
-                                            if (getRecView != null && getRecView.length > 0) {
-                                                for (int i = 0; i < recAmmount; i++) {
-                                                    Track track = getRecView[i];
-                                                    String song = track.getName();
-                                                    ArtistSimplified[] artists = track.getArtists();
-                                                    String artist = "";
+                                        if (getRecView != null && getRecView.length > 0) {
+                                            for (int i = 0; i < recAmmount; i++) {
+                                                Track track = getRecView[i];
+                                                String song = track.getName();
+                                                ArtistSimplified[] artists = track.getArtists();
+                                                String artist = "";
 
-                                                    if (artists != null && artists.length > 0) {
-                                                        artist = artists[0].getName();
-                                                    }
-
-                                                    String result = artist + " - " + song;
-                                                    recBuilder.append(result);
-                                                    recBuilder.append("\n");
+                                                if (artists != null && artists.length > 0) {
+                                                    artist = artists[0].getName();
                                                 }
 
-
-                                                setTextAsync(recBuilder.toString(), text_recs);
-                                            } else {
-                                                setTextAsync("No recommendations available", text_recs);
+                                                String result = artist + " - " + song;
+                                                recBuilder.append(result);
+                                                recBuilder.append("\n");
                                             }
+
+
+                                            setTextAsync(recBuilder.toString(), text_recs);
+                                        } else {
+                                            setTextAsync("No recommendations available", text_recs);
                                         }
-                                    });
+                                    }
+                                });
 
 
-                                    next3.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            binding = ActivityMainBinding.inflate(getLayoutInflater());
-                                            setContentView(binding.getRoot());
 
-                                            BottomNavigationView navView = findViewById(R.id.nav_view);
-                                            // Passing each menu ID as a set of Ids because each
-                                            // menu should be considered as top level destinations.
-                                            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                                                    R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
-                                                    .build();
-                                            NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
-                                            NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
-                                            NavigationUI.setupWithNavController(binding.navView, navController);
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
+                                next3.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        binding = ActivityMainBinding.inflate(getLayoutInflater());
+                                        setContentView(binding.getRoot());
+
+                                        BottomNavigationView navView = findViewById(R.id.nav_view);
+                                        // Passing each menu ID as a set of Ids because each
+                                        // menu should be considered as top level destinations.
+                                        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                                                R.id.navigation_home, R.id.navigation_past, R.id.navigation_profile)
+                                                .build();
+                                        NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
+                                        NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
+                                        NavigationUI.setupWithNavController(binding.navView, navController);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             }
         });
     }
@@ -318,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
         // Check which request code is present (if any)
         if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
             mAccessToken = response.getAccessToken();
-            ;
 
         } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
             mAccessCode = response.getCode();
@@ -332,12 +322,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onGetUserProfileClickedA(Activity activity) {
         if (mAccessToken == null) {
-            if (mRefreshToken == null) {
-                Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
-            } else {
-                performRefreshTokenRequest(buildRefreshTokenRequest(mRefreshToken));
-                Log.d("MyApp", mAccessToken);
-            }
+            Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -424,7 +409,7 @@ public class MainActivity extends AppCompatActivity {
                     });
 
 
-                    } catch (JSONException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                     // Handle JSON parsing error
                     Log.e("HTTP", "Failed to parse JSON: " + e.getMessage());
@@ -676,13 +661,7 @@ public class MainActivity extends AppCompatActivity {
     private Track[] getRecommendations(){
         SpotifyApi spotifyApi = new SpotifyApi.Builder()
                 .setAccessToken(mAccessToken)
-                .setRedirectUri(URI.create(REDIRECT_URI))
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET)
                 .build();
-        mAccessToken = spotifyApi.getAccessToken();
-        mRefreshToken = spotifyApi.getRefreshToken();
-        Log.d("myapp", mRefreshToken);
 
         String combinedGenres = String.join(",", genres);
 
@@ -745,67 +724,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-//        firestore.collection("mixtape").document(username)
-//                .set(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            Toast.makeText(MainActivity.this, "Saved in Firestore", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(MainActivity.this, "Failed to save in Firestore", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Overrid
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
     }
 
-    private Request buildRefreshTokenRequest (String refreshToken){
-        // Creating the request body
-        RequestBody body = new FormBody.Builder()
-                .add("refresh_token", refreshToken)
-                .add("grant_type", "refresh_token")
-                .add("client_id", CLIENT_ID)
-                .build();
-
-        // Creating the Authorization header
-        String pre64 = String.format("%s:%s", CLIENT_ID, CLIENT_SECRET);
-        String post64 = Base64.getEncoder().encodeToString(pre64.getBytes());
-
-        // Creating the request
-        return new Request.Builder()
-                .url("https://accounts.spotify.com/api/token")
-                .post(body)
-                .addHeader("content-type", "application/x-www-form-urlencoded")
-                .addHeader("Authorization", "Basic " + post64)
-                .build();
-    }
-
-    private void performRefreshTokenRequest(Request request) {
-        // Performing the request
-        mOkHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d("HTTP", "Failed to refresh access token: " + e);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                assert response.body() != null;
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    // Store the access token in the provided String parameter
-                    mAccessToken = jsonObject.getString("access_token");
-                    mRefreshToken = jsonObject.getString("refresh_token");
-                } catch (JSONException | IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
 }
