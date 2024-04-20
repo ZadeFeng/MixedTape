@@ -2,13 +2,7 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="MIXTAPE">
-        <State />
-      </entry>
-      <entry key="MainActivity">
-        <State />
-      </entry>
-      <entry key="app">
+      <entry key="MixedTape.MIXTAPE.app">
         <State />
       </entry>
     </value>
