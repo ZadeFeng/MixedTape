@@ -544,7 +544,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     uploadData(stringBuilder.toString());
-                    uploadPastData(stringBuilder.toString());
+//                    uploadPastData(stringBuilder.toString());
 
                     // Ensure there are songs to play
                     if (!previewUrls.isEmpty()) {
@@ -748,29 +748,29 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-    public void uploadPastData(String text) {
-        String username = uploadUsername.getText().toString();
-
-        String currentDate = valueOf(Calendar.getInstance());
-        DataClass dataClass = new DataClass(artists, username, text, currentDate);
-        //String currentDate = String.valueOf(Calendar.getInstance().getTime());
-
-        FirebaseDatabase.getInstance().getReference("mixtapePast").child(username).child(currentDate)
-                .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, "help", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
+//    public void uploadPastData(String text) {
+//        String username = uploadUsername.getText().toString();
+//
+//        String currentDate = valueOf(Calendar.getInstance());
+//        DataClass dataClass = new DataClass(artists, username, text, currentDate);
+//        //String currentDate = String.valueOf(Calendar.getInstance().getTime());
+//
+//        FirebaseDatabase.getInstance().getReference("mixtapePast").child(username).child(currentDate)
+//                .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if (task.isSuccessful()) {
+//                            Toast.makeText(MainActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(MainActivity.this, "help", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
 
 }
