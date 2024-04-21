@@ -47,6 +47,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("mixtape");
+                final DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference("mixtapePast");
 
                 View view = LayoutInflater.from(getContext()).inflate(R.layout.confirm_edit, null);
 
@@ -81,6 +82,20 @@ public class ProfileFragment extends Fragment {
                                 String oldUsername2 = oldUsername.getText().toString();
 
                                 reference.orderByChild("dataUsername").equalTo(oldUsername2).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                            // Update the username field with the new username
+                                            dataSnapshot.getRef().child("dataUsername").setValue(newUsername);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                                reference2.orderByChild("dataUsername").equalTo(oldUsername2).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {

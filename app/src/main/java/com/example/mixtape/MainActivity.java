@@ -207,9 +207,7 @@ public class MainActivity extends AppCompatActivity {
                                     });
                                     Button getTracks = findViewById(R.id.get_tracks);
                                     getTracks.setOnClickListener(((View view) -> {
-                                        if (mainActivity != null) {
-                                            mainActivity.onGetUserProfileClickedT(MainActivity.this);
-                                        }
+                                            onGetUserProfileClickedT(MainActivity.this);
                                     }));
                                     Button next3 = findViewById(R.id.nextThree);
                                     text_track = (TextView) findViewById(R.id.text_track);
@@ -751,11 +749,11 @@ public class MainActivity extends AppCompatActivity {
     public void uploadPastData(String text) {
         String username = uploadUsername.getText().toString();
 
-        String currentDate = valueOf(Calendar.getInstance());
+        String currentDate = valueOf(Calendar.getInstance().getTime());
         DataClass dataClass = new DataClass(artists, username, text, currentDate);
         //String currentDate = String.valueOf(Calendar.getInstance().getTime());
 
-        FirebaseDatabase.getInstance().getReference("mixtapePast").child(username).child(currentDate)
+        FirebaseDatabase.getInstance().getReference("mixtapePast").child(currentDate)
                 .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
