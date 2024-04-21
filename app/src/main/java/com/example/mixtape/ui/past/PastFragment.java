@@ -32,6 +32,7 @@ public class PastFragment extends Fragment {
     private FragmentPastBinding binding;
     MyAdapter adapter;
     List<DataClass> dataList;
+    String username;
     MainActivity mainActivity;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -62,7 +63,7 @@ public class PastFragment extends Fragment {
         adapter = new MyAdapter(getContext(), dataList);
         recyclerView.setAdapter(adapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("mixtape");
+        databaseReference = FirebaseDatabase.getInstance().getReference("mixtapePast").child("Lekhya");
         dialog.show();
 
         valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {

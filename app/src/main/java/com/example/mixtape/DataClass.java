@@ -11,6 +11,7 @@ public class DataClass {
     private String dataArtists;
     private String dataTracks;
     private String dataUsername;
+    private String dataDate;
     private String key;
     public Map<String, Boolean> stars = new HashMap<>();
 
@@ -22,10 +23,11 @@ public class DataClass {
         this.key = key;
     }
 
-    public DataClass(String dataItems, String dataUsername, String dataTracks) {
+    public DataClass(String dataItems, String dataUsername, String dataTracks, String dataDate) {
         this.dataArtists = dataItems;
         this.dataTracks = dataTracks;
         this.dataUsername = dataUsername;
+        this.dataDate = dataDate;
         //this.dataImage = dataImage;
     }
 
@@ -38,6 +40,9 @@ public class DataClass {
     }
     public String getDataUsername() {
         return dataUsername;
+    }
+    public String getDataDate() {
+        return dataDate;
     }
 
     @Exclude
