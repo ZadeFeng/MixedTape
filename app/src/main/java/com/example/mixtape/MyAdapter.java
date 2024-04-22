@@ -49,17 +49,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>{
         holder.recTopT.setText(dataList.get(position).getDataTracks());
         holder.recDate.setText(dataList.get(position).getDataDate());
 
-        holder.recCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra("TOP ARTISTS", dataList.get(holder.getLayoutPosition()).getDataArtists());
-                intent.putExtra("username", dataList.get(holder.getLayoutPosition()).getDataUsername());
-                intent.putExtra("TOP TRACKS", dataList.get(holder.getLayoutPosition()).getDataTracks());
-                intent.putExtra("Key", dataList.get(holder.getLayoutPosition()).getKey());
-                context.startActivity(intent);
-            }
-        });
+//        holder.recCard.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(context, DetailActivity.class);
+//                intent.putExtra("TOP ARTISTS", dataList.get(holder.getLayoutPosition()).getDataArtists());
+//                intent.putExtra("username", dataList.get(holder.getLayoutPosition()).getDataUsername());
+//                intent.putExtra("TOP TRACKS", dataList.get(holder.getLayoutPosition()).getDataTracks());
+//                intent.putExtra("Key", dataList.get(holder.getLayoutPosition()).getKey());
+//                context.startActivity(intent);
+//            }
+//        });
     }
 
     @Override
