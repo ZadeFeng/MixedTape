@@ -1,5 +1,6 @@
 package com.example.mixtape;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>{
         holder.recTopA.setText(dataList.get(position).getDataArtists());
         holder.recUser.setText(dataList.get(position).getDataUsername());
         holder.recTopT.setText(dataList.get(position).getDataTracks());
+        holder.recDate.setText(dataList.get(position).getDataDate());
 
         holder.recCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +76,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>{
 class MyViewHolder extends RecyclerView.ViewHolder {
 
     ImageView recImage;
-    TextView recCourse, recUser, recTopA, recTopT;
+    TextView recCourse, recUser, recTopA, recTopT, recDate;
     CardView recCard;
 
     public MyViewHolder(@NonNull View itemView) {
@@ -85,6 +87,7 @@ class MyViewHolder extends RecyclerView.ViewHolder {
         recUser = itemView.findViewById(R.id.recUsername);
         recTopA = itemView.findViewById(R.id.recTop);
         recTopT = itemView.findViewById(R.id.recTopT);
+        recDate = itemView.findViewById(R.id.recMixtape);
         recCard = itemView.findViewById(R.id.recCard);
 
     }

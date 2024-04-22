@@ -63,6 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="458dp"
                     android:layout_marginTop="0dp"
+                    android:layout_marginBottom="60dp"
                     android:scrollbars="vertical" />
             </FrameLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

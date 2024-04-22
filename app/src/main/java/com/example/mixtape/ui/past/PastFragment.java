@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -32,7 +33,9 @@ public class PastFragment extends Fragment {
     private FragmentPastBinding binding;
     MyAdapter adapter;
     List<DataClass> dataList;
+    String username;
     MainActivity mainActivity;
+    SearchView searchView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +50,8 @@ public class PastFragment extends Fragment {
         DatabaseReference databaseReference;
         ValueEventListener valueEventListener;
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
+        searchView = root.findViewById(R.id.search);
+        searchView.clearFocus();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -62,7 +67,7 @@ public class PastFragment extends Fragment {
         adapter = new MyAdapter(getContext(), dataList);
         recyclerView.setAdapter(adapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("mixtape");
+        databaseReference = FirebaseDatabase.getInstance().getReference("mixtapePast");
         dialog.show();
 
         valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
@@ -80,6 +85,19 @@ public class PastFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchList(newText);
+                return true;
             }
         });
 
