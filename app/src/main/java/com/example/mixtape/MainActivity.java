@@ -4,6 +4,7 @@ import static java.lang.String.valueOf;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -61,7 +62,9 @@ import se.michaelthelin.spotify.model_objects.specification.Recommendations;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 
@@ -72,11 +75,13 @@ public class MainActivity extends AppCompatActivity {
     public static final String CLIENT_ID = "6fce362aa36d46fda30fd2de1d4d4f86";
     public static final String REDIRECT_URI = "com.example.mixtape://auth";
 
+    public static final String CLIENT_SECRET = "0108c9ce7f9148a48436baf94c522918";
+
     public static final int AUTH_TOKEN_REQUEST_CODE = 0;
     public static final int AUTH_CODE_REQUEST_CODE = 1;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private String mAccessToken, mAccessCode, refreshToken;
+    private String mAccessToken, mAccessCode, mRefreshToken;
     private Call mCall;
 
     Button login;
@@ -343,7 +348,12 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onGetUserProfileClickedA(Activity activity) {
         if (mAccessToken == null) {
-            Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+            if (mRefreshToken == null) {
+                Toast.makeText(activity, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+            } else {
+                performRefreshTokenRequest(buildRefreshTokenRequest(mRefreshToken));
+                Log.d("MyApp", mAccessToken);
+            }
             return;
         }
 
@@ -683,7 +693,12 @@ public class MainActivity extends AppCompatActivity {
     private Track[] getRecommendations(){
         SpotifyApi spotifyApi = new SpotifyApi.Builder()
                 .setAccessToken(mAccessToken)
+                .setRedirectUri(URI.create(REDIRECT_URI))
+                .setClientId(CLIENT_ID)
+                .setClientSecret(CLIENT_SECRET)
                 .build();
+        mAccessToken = spotifyApi.getAccessToken();
+        mRefreshToken = spotifyApi.getRefreshToken();
 
         String combinedGenres = String.join(",", genres);
 
@@ -770,5 +785,54 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+    private Request buildRefreshTokenRequest(String refreshToken) {
+        // Creating the request body
+        RequestBody body = new FormBody.Builder()
+                .add("refresh_token", refreshToken)
+                .add("grant_type", "refresh_token")
+                .add("client_id", CLIENT_ID)
+                .build();
 
+        // Creating the Authorization header
+        String credentials = CLIENT_ID + ":" + CLIENT_SECRET;
+        String authHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
+
+        // Building the request
+        return new Request.Builder()
+                .url("YOUR_TOKEN_ENDPOINT_URL") // Replace with your token endpoint URL
+                .post(body)
+                .header("Authorization", authHeader)
+                .build();
+    }
+
+    private void performRefreshTokenRequest(Request request) {
+        // Creating an instance of MutableLiveData to hold the token response
+        MutableLiveData<JSONObject> tokenResponse = new MutableLiveData<>();
+
+        // Performing the request
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("HTTP", "Failed to refresh access token: " + e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                assert response.body() != null;
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+
+                    // Posting the token response to LiveData
+                    tokenResponse.postValue(jsonObject);
+
+                    // Store the access token and refresh token in member variables
+                    mAccessToken = jsonObject.getString("access_token");
+                    mRefreshToken = jsonObject.getString("refresh_token");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
 }
